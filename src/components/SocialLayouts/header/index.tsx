@@ -1,0 +1,67 @@
+"use client";
+
+import { SearchIcon } from "../../../assets/icons";
+import Image from "next/image";
+import Link from "next/link";
+import { useSidebarSocialContext } from "../sidebar/sidebar-context";
+import { MenuIcon } from "./icons";
+import { Notification } from "./notification";
+import { ThemeToggleSwitch } from "./theme-toggle";
+import { UserInfo } from "./user-info";
+import { useAuth } from "@/context/auth";
+
+export function Header() {
+  const auth = useAuth();
+  const { toggleSidebar, isMobile } = useSidebarSocialContext();
+
+  return (
+    <header className="sticky top-0 z-30 flex items-center justify-between space-x-0 border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-900 md:px-5 2xl:px-10">
+      <button
+        onClick={toggleSidebar}
+        className="rounded-lg border px-1.5 py-1 dark:border-stroke-dark dark:bg-[#020D1A] dark:text-white/90 hover:dark:bg-[#FFFFFF1A] lg:hidden"
+      >
+        <MenuIcon />
+        <span className="sr-only">Toggle Sidebar</span>
+      </button>
+
+      {isMobile && (
+        <Link
+          href={"/admin"}
+          className="ml-2 max-[430px]:hidden min-[375px]:ml-4"
+        >
+          <Image
+            src={"/images/logo/logo-icon.svg"}
+            width={32}
+            height={32}
+            alt=""
+            role="presentation"
+          />
+        </Link>
+      )}
+
+      <div className="w-64 max-xl:hidden">
+        <h1 className="mb-0.5 text-heading-5 font-bold text-dark dark:text-white">
+          KT
+        </h1>
+        <p className="font-medium">Social Media</p>
+      </div>
+      <div className="pm-32 relative w-full max-w-[300px]">
+        <input
+          type="search"
+          placeholder="Search"
+          className="flex w-full items-center gap-3.5 rounded-full border bg-gray-100 py-3 pl-[53px] pr-5 outline-none transition-colors focus-visible:border-primary dark:border-dark-3 dark:bg-dark-2 dark:bg-gray-700 dark:text-white/90 dark:hover:border-dark-4 dark:hover:bg-dark-3 dark:hover:text-dark-6 dark:focus-visible:border-primary"
+        />
+
+        <SearchIcon className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 dark:text-white/90 max-[1015px]:size-5" />
+      </div>
+      <div className="flex flex-1 items-center justify-end gap-2 min-[375px]:gap-4">
+        {/* <ThemeToggleSwitch /> */}
+        {auth.isAuthenticated && <Notification />}
+
+        <div className="shrink-0">
+          <UserInfo />
+        </div>
+      </div>
+    </header>
+  );
+}
