@@ -83,7 +83,16 @@ export function UserInfo() {
 
         <div className="space-y-2 p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
           <Link
-            href={"/profile"}
+            href={"/admin"}
+            onClick={() => setIsOpen(false)}
+            className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-200 hover:text-dark dark:bg-gray-800 dark:text-white/90 dark:hover:bg-dark-3 dark:hover:text-white"
+          >
+            <UserIcon />
+
+            <span className="mr-auto text-base font-medium">Go to Admin</span>
+          </Link>
+          <Link
+            href={"/social/profile"}
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-200 hover:text-dark dark:bg-gray-800 dark:text-white/90 dark:hover:bg-dark-3 dark:hover:text-white"
           >

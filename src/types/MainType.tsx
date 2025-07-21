@@ -16,6 +16,7 @@ export type Filter = {
   sessionCode: string;
   sortField?: string;
   sortOrder?: string;
+  userId?: string;
 };
 
 export type UserTokenPayload = {

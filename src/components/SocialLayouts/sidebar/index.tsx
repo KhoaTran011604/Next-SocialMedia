@@ -59,7 +59,7 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          "max-w-[290px] overflow-hidden bg-transparent p-4 transition-[width] duration-200 ease-linear dark:text-white/90",
+          "max-w-[290px] overflow-hidden bg-transparent p-0 transition-[width] duration-200 ease-linear dark:text-white/90 lg:p-4",
           isMobile ? "fixed bottom-0 top-0 z-50" : "sticky top-0 h-screen",
           isOpen ? "w-full" : "w-0",
         )}
@@ -67,7 +67,7 @@ export function Sidebar() {
         aria-hidden={!isOpen}
         inert={!isOpen}
       >
-        <div className="flex h-full flex-col rounded-lg border border-gray-200 bg-white py-10 pl-[25px] pr-[7px] dark:border-gray-800 dark:bg-gray-900">
+        <div className="base:rounded-lg flex h-full flex-col border border-gray-200 bg-white py-10 pl-[25px] pr-[7px] dark:border-gray-800 dark:bg-gray-900 md:rounded-none lg:rounded-lg">
           <div className="relative pr-4.5">
             {/* <Link
               href={"/admin"}

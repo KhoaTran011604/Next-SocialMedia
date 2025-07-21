@@ -15,10 +15,10 @@ export function Header() {
   const { toggleSidebar, isMobile } = useSidebarSocialContext();
 
   return (
-    <header className="sticky top-0 z-30 flex items-center justify-between space-x-0 border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-900 md:px-5 2xl:px-10">
+    <header className="sticky top-0 z-30 flex items-center justify-between gap-4 space-x-0 border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-900 md:px-5 2xl:px-10">
       <button
         onClick={toggleSidebar}
-        className="rounded-lg border px-1.5 py-1 dark:border-stroke-dark dark:bg-[#020D1A] dark:text-white/90 hover:dark:bg-[#FFFFFF1A] lg:hidden"
+        className="rounded-lg border px-1.5 py-1 dark:border-stroke-dark dark:bg-[#020D1A] dark:text-white/90 hover:dark:bg-[#FFFFFF1A] sm:block md:hidden lg:hidden"
       >
         <MenuIcon />
         <span className="sr-only">Toggle Sidebar</span>
@@ -45,11 +45,11 @@ export function Header() {
         </h1>
         <p className="font-medium">Social Media</p>
       </div>
-      <div className="pm-32 relative w-full max-w-[300px]">
+      <div className="pm-32 relative w-full max-w-[150px] lg:max-w-[300px]">
         <input
           type="search"
           placeholder="Search"
-          className="flex w-full items-center gap-3.5 rounded-full border bg-gray-100 py-3 pl-[53px] pr-5 outline-none transition-colors focus-visible:border-primary dark:border-dark-3 dark:bg-dark-2 dark:bg-gray-700 dark:text-white/90 dark:hover:border-dark-4 dark:hover:bg-dark-3 dark:hover:text-dark-6 dark:focus-visible:border-primary"
+          className="flex h-10 w-full items-center gap-3.5 rounded-full border bg-gray-100 py-3 pl-[53px] pr-5 outline-none transition-colors focus-visible:border-primary dark:border-dark-3 dark:bg-dark-2 dark:bg-gray-700 dark:text-white/90 dark:hover:border-dark-4 dark:hover:bg-dark-3 dark:hover:text-dark-6 dark:focus-visible:border-primary"
         />
 
         <SearchIcon className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 dark:text-white/90 max-[1015px]:size-5" />

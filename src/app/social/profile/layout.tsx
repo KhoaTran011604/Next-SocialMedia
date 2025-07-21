@@ -1,13 +1,9 @@
+import RightPanel from "@/components/Social/RightPanel/RightPanel";
+import { Sidebar } from "@/components/SocialLayouts/sidebar";
 import "@/css/satoshi.css";
 import "@/css/style.css";
 import { Metadata } from "next";
 import { PropsWithChildren } from "react";
-
-import { Providers } from "./providers";
-import { Header } from "@/components/SocialLayouts/header";
-import { Sidebar } from "@/components/SocialLayouts/sidebar";
-
-import RightPanel from "@/components/Social/RightPanel/RightPanel";
 
 export const metadata: Metadata = {
   title: {
@@ -20,9 +16,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <Providers>
-      <Header />
-      <div className="flex min-h-screen">{children}</div>
-    </Providers>
+    <div className="flex w-full justify-between bg-gray-2 dark:bg-[#020d1a]">
+      <Sidebar />
+
+      <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-6 md:px-16">
+        {children}
+      </main>
+
+      {/* <RightPanel /> */}
+    </div>
   );
 }

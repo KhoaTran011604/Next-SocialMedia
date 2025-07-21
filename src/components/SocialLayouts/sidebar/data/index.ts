@@ -10,9 +10,10 @@ export const NAV_DATA = [
         oAuth: false,
         items: [
           {
-            title: "Profile",
-            url: "/social/profile",
+            title: "Social Media",
+            url: "/social",
           },
+
         ],
       },
       {
