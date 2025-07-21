@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server'
 
 
 // Mảng các path cần áp dụng middleware
-const protectedRoutes = ['/admin', '/admin/products', '/admin/orders', '/admin/reviews', '/admin/categories', '/admin/users']
+const protectedRoutes = ['/admin', '/admin/products', '/admin/orders', '/admin/reviews', '/admin/categories', '/admin/users', '/social']
 
 export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
@@ -30,5 +30,7 @@ export const config = {
         '/admin/categories/:path*',
         '/admin/users',
         '/admin/users/:path*',
+        '/social',
+        '/social/:path*'
     ],
 }

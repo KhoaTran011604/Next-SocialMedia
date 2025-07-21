@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
       Cookies.set("token_info", encrypted, { expires: 7 }); // lưu 7 ngày
       setIsAuthenticated(true);
-      router.push("/admin");
+      router.push("/social");
       return { success: true, data: dataToken };
     } else {
       return { success: false, data: {} };
