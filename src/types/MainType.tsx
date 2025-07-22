@@ -82,8 +82,26 @@ export interface imageProps {
   isNewUpload: boolean;
 }
 
+export type LikePayload = {
+  userId: string;
+  postId: string;
+  isLike: boolean;
+};
+
+export type CommentPayload = {
+  userId: string;
+  postId: string;
+  content: string;
+  parentId?: string;
+};
+
+type TypeResponse = {
+  success: boolean;
+  data: any;
+};
 export interface ItemPostProps {
   userId: { fullName: string; images: imageProps[]; _id: string };
+  _id: string;
   createdAt: Date;
   content: string;
   image?: imageProps[];
@@ -91,4 +109,43 @@ export interface ItemPostProps {
   likes: any[];
   comments: any[];
   images: any[];
+  likeCount: number;
+  commentCount: number;
+  handleLike: (data: LikePayload) => void;
+  handleComment: (data: CommentPayload) => void;
+  handleDeleteComment?: (id: string) => void;
 }
+
+export interface VariantModalProps {
+  open: boolean;
+  setOpen: (status: boolean) => void;
+  children: any;
+  variant: string;
+  title?: string;
+  onClose: () => void;
+  onConfirm: () => void;
+  textButtomClose: string;
+  textButtomConfirm: string;
+  hiddenButtomConfirm: boolean;
+}
+
+export interface LikeResponse {
+  userId: { fullName: string; images: imageProps[]; _id: string };
+  postId: string;
+  _id: string;
+  createdAt: Date;
+}
+export interface CommentResponse {
+  userId: { fullName: string; images: imageProps[]; _id: string };
+  postId: string;
+  _id: string;
+  createdAt: Date;
+  content: string;
+  parentId?: { _id: string; content: string; createdAt: Date };
+}
+
+export type ChatMessage = {
+  role: "user" | "model";
+  content: string;
+  [key: string]: any; // Nếu có thêm các field khác như time, id, etc.
+};

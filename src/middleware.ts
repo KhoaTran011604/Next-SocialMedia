@@ -10,10 +10,13 @@ const protectedRoutes = ['/admin', '/admin/products', '/admin/orders', '/admin/r
 export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
     const token = request.cookies.get('token_info')?.value;
+    if (pathname === '/') {
+        return NextResponse.redirect(new URL('/social', request.url));
+    }
 
-    // if (!token && protectedRoutes.some((route) => pathname.startsWith(route))) {
-    //     return NextResponse.redirect(new URL('/auth/sign-in', request.url));
-    // }
+    if (!token && protectedRoutes.some((route) => pathname.startsWith(route))) {
+        return NextResponse.redirect(new URL('/auth/sign-in', request.url));
+    }
     return NextResponse.next();
 }
 

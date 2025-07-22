@@ -1,3 +1,4 @@
+"use client";
 const FriendRequest = () => {
   return (
     <div className="mb-4 w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -46,7 +47,12 @@ const FriendRequest = () => {
                 5 mutual friends
               </div>
               <div className="mt-2 flex space-x-2">
-                <button className="rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-blue-700">
+                <button
+                  onClick={() => {
+                    console.log("Click");
+                  }}
+                  className="rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-blue-700"
+                >
                   Accept
                 </button>
                 <button className="rounded-md bg-gray-200 px-3 py-1 text-xs font-medium text-gray-700 transition-colors hover:bg-gray-300">

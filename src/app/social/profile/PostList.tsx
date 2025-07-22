@@ -48,6 +48,7 @@ const PostList = () => {
       .finally(() => setIsLoading(false));
   };
   useEffect(() => {
+    scrollTo(0, 0);
     if (auth) {
       setUserId(auth.user.id);
       LoadData();

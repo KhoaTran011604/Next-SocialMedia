@@ -1,7 +1,13 @@
 "use client";
 import { GetAllPost } from "@/api/postService";
+import { CreateComment, DeleteComment, LikeToggle } from "@/api/socialService";
 import PostCard from "@/components/Social/PostCard";
-import { Filter, ItemPostProps } from "@/types/MainType";
+import {
+  CommentPayload,
+  Filter,
+  ItemPostProps,
+  LikePayload,
+} from "@/types/MainType";
 import useStore from "@/zustand/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -38,7 +44,38 @@ const PostList = () => {
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   };
+  const handleComment = (comment: CommentPayload) => {
+    if (isLoading) {
+      return;
+    }
+    setIsLoading(true);
+    CreateComment(comment)
+      .then((response) => {})
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+  };
+  const handleDeleteComment = (id: string) => {
+    if (isLoading) {
+      return;
+    }
+    setIsLoading(true);
+    DeleteComment(id)
+      .then((response) => {})
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+  };
+  const handleLike = (comment: LikePayload) => {
+    if (isLoading) {
+      return;
+    }
+    setIsLoading(true);
+    LikeToggle(comment)
+      .then((response) => {})
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
+  };
   useEffect(() => {
+    scrollTo(0, 0);
     LoadData();
   }, []);
 
@@ -46,7 +83,13 @@ const PostList = () => {
     <div>
       <div className="space-y-4">
         {data.map((item, idx) => (
-          <PostCard key={idx} {...item} />
+          <PostCard
+            key={idx}
+            {...item}
+            handleComment={handleComment}
+            handleDeleteComment={handleDeleteComment}
+            handleLike={handleLike}
+          />
         ))}
       </div>
     </div>
