@@ -22,7 +22,12 @@ export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
-  const imagePath = "/images/user/khoatran.jpg";
+  console.log(auth);
+
+  const imagePath =
+    auth?.user?.profilePic?.length > 0
+      ? auth?.user?.profilePic
+      : "/images/user/default-user.png";
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>
@@ -30,7 +35,7 @@ export function UserInfo() {
         <span className="sr-only">My Account</span>
         {auth.isAuthenticated && (
           <figure className="flex items-center gap-3">
-            <Image
+            <img
               src={imagePath}
               className="size-12 rounded-full"
               alt={`Avatar of ${auth?.user?.fullName}`}

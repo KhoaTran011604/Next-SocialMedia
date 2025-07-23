@@ -2,8 +2,6 @@
 import { LikeResponse } from "@/types/MainType";
 
 const LikeItem = ({ like }: { like: LikeResponse }) => {
-  console.log("like", like);
-
   return (
     <div>
       <div className="mt-2 flex justify-between gap-4">

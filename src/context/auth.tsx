@@ -6,6 +6,14 @@ import Cookies from "js-cookie";
 import { apiLogin, AuthVertify, RefreshToken, SignUp } from "@/api/authService";
 import { getDataFromToken } from "@/hooks/useLocalStore";
 import { decryptData, encryptData } from "@/lib/crypto";
+import { io, Socket } from "socket.io-client";
+import {
+  GetMessages,
+  getUsersForSidebar,
+  SendMessage,
+} from "@/api/socialService";
+import { UserTokenPayload } from "@/types/MainType";
+import { BaseResponse } from "@/api/BaseResponse";
 
 type AuthPayload = {
   email: string;
@@ -20,34 +28,147 @@ type LoginResponse = {
   success: boolean;
   data: any;
 };
+
+interface UpdateProfilePayload {
+  fullName?: string;
+  // thêm các field cập nhật khác
+}
+
+interface AuthUser {
+  id: string;
+  fullName?: string;
+  email?: string;
+  image?: string;
+  // thêm các field khác nếu cần
+}
+
+interface DataSocketIOProps {
+  //#region SocketIO
+  authUser: AuthUser | null;
+  isSigningUp: boolean;
+  isLoggingIn: boolean;
+  isUpdatingProfile: boolean;
+  isCheckingAuth: boolean;
+  onlineUsers: string[];
+  socket: Socket | null;
+  messages: any;
+  users: any;
+  selectedUser: any;
+  isUsersLoading: boolean;
+  isMessagesLoading: boolean;
+
+  checkAuth: () => Promise<void>;
+  signup: (data: SignUpPayload) => Promise<void>;
+  login: (data: SignUpPayload) => Promise<void>;
+  logout: () => Promise<void>;
+  updateProfile: (data: UpdateProfilePayload) => Promise<void>;
+  connectSocket: () => void;
+  disconnectSocket: () => void;
+  getUsers: () => void;
+  getMessages: (userId: string) => Promise<void>;
+  //sendMessage: (messageData: any) => Promise<BaseResponse<any>>;
+  subscribeToMessages: (selectedUser: any, oldMessage: any) => void;
+  unsubscribeFromMessages: () => void;
+  //setSelectedUser: (selectedUser: any) => void;
+  //#endregion
+}
+
 type AuthContextType = {
   isAuthenticated: boolean;
   user: any;
   login: (data: AuthPayload) => Promise<LoginResponse>;
   register: (data: SignUpPayload) => Promise<boolean>;
   logout: () => boolean;
+  dataSocketIO: DataSocketIOProps;
+  selectedUser: any;
+  setSelectedUser: (selectedUser: any) => void;
+  messages: any;
+  setMessages: (data: any) => void;
 };
+const initialState: DataSocketIOProps = {
+  authUser: null,
+  isSigningUp: false,
+  isLoggingIn: false,
+  isUpdatingProfile: false,
+  isCheckingAuth: true,
+  onlineUsers: [],
+  socket: null,
+  messages: [],
+  users: [],
+  selectedUser: null,
+  isUsersLoading: false,
+  isMessagesLoading: false,
 
+  checkAuth: async () => {},
+  signup: async (_data: SignUpPayload) => {},
+  login: async (_data: SignUpPayload) => {},
+  logout: async () => {},
+  updateProfile: async (_data: UpdateProfilePayload) => {},
+  connectSocket: () => {},
+  disconnectSocket: () => {},
+  getUsers: () => {},
+  getMessages: async () => {},
+  // sendMessage: async (messageData) => {
+  //   return "";
+  // },
+  subscribeToMessages: (selectedUser: any, oldMessage: any) => {},
+  unsubscribeFromMessages: () => {},
+  //setSelectedUser: (selectedUser) => {},
+};
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   user: {},
   login: async (data) => ({ success: false, data: {} }),
   register: async (data) => false,
   logout: () => true,
+  dataSocketIO: initialState,
+  selectedUser: null,
+  setSelectedUser: () => {},
+  messages: [],
+  setMessages: (data) => {},
 });
+
+const BASE_URL = "http://localhost:5000";
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<UserTokenPayload | null>(null);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [messages, setMessages] = useState<any | null>([]);
+  const [dataSocketIO, setDataSocketIO] = useState<DataSocketIOProps>({
+    ...initialState,
+    connectSocket: () => connectSocket(),
+    disconnectSocket: () => disconnectSocket(),
+    getUsers: () => getUsers(),
+    getMessages: async (userId) => getMessages(userId),
+    //sendMessage: (data) => sendMessage(data),
+    subscribeToMessages: (selectedUserId, oldMessage) =>
+      subscribeToMessages(selectedUserId, oldMessage),
+    unsubscribeFromMessages: () => unsubscribeFromMessages(),
+    //setSelectedUser: (data) => setSelectedUser(data),
+  });
+
   const login = async (data: AuthPayload) => {
     const res = await apiLogin(data);
 
     if (res.success) {
       const dataToken = getDataFromToken(res.data.accessToken);
+      console.log("dataToken", dataToken);
 
       if (dataToken) {
         setUser(dataToken);
+        //Socket IO
+
+        var newAuthUser = {
+          id: dataToken.id,
+          fullName: dataToken.fullName,
+          email: dataToken.email,
+          image: "",
+        };
+        dataSocketIO.authUser = newAuthUser;
+        dataSocketIO.isLoggingIn = true;
+        dataSocketIO.connectSocket();
       }
       const { accessToken, refreshToken } = res.data;
       const encrypted = encryptData({
@@ -59,6 +180,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       router.push("/social");
       return { success: true, data: dataToken };
     } else {
+      dataSocketIO.isLoggingIn = false;
       return { success: false, data: {} };
     }
   };
@@ -67,8 +189,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return res.success ? true : false;
   };
   const logout = () => {
-    setUser({});
+    setUser(null);
     setIsAuthenticated(false);
+    dataSocketIO.authUser = null;
+    dataSocketIO.disconnectSocket();
     return true;
   };
   const getTokensFromCookies = () => {
@@ -98,6 +222,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
 
       setUser(response.data);
+      //SocketIO
+      dataSocketIO.authUser = response.data;
+      dataSocketIO.connectSocket();
       //router.push("/admin");
     } else if (!response.success && response.message === "TokenExpiredError") {
       //1.Call API to refresh token
@@ -113,6 +240,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const dataFromToken = getDataFromToken(res.data.accessToken);
         if (dataFromToken) {
           setUser(dataFromToken);
+          //SocketIO
+          var newAuthUser = {
+            id: dataFromToken.userId,
+            fullName: "Demo",
+            email: "demo@gmail.com",
+            image: "",
+          };
+          dataSocketIO.authUser = newAuthUser;
+          dataSocketIO.connectSocket();
         }
 
         const encrypted = encryptData({
@@ -131,13 +267,128 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  //#region SocketIO
+
+  const connectSocket = () => {
+    const { authUser } = dataSocketIO;
+
+    if (!authUser || dataSocketIO.socket?.connected) return;
+
+    const socket = io(BASE_URL, {
+      query: {
+        userId: authUser.id,
+      },
+    });
+    socket.connect();
+
+    dataSocketIO.socket = socket;
+
+    dataSocketIO.socket.on("getOnlineUsers", (userIds) => {
+      dataSocketIO.onlineUsers = userIds;
+    });
+  };
+  const disconnectSocket = () => {
+    if (dataSocketIO.socket?.connected) dataSocketIO.socket.disconnect();
+  };
+
+  const getUsers = async () => {
+    dataSocketIO.isUsersLoading = true;
+
+    try {
+      const res = await getUsersForSidebar({});
+      //Call API
+      dataSocketIO.users = res.data;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dataSocketIO.isUsersLoading = false;
+    }
+  };
+
+  const getMessages = async (userId: string) => {
+    dataSocketIO.isUsersLoading = true;
+
+    try {
+      if (userId.length > 0) {
+        const res = await GetMessages(userId);
+
+        dataSocketIO.messages = res.data;
+        setMessages(res.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      dataSocketIO.isUsersLoading = false;
+    }
+  };
+  const sendMessage = async (messageData: any) => {
+    try {
+      console.log("Send");
+
+      const res = await SendMessage(selectedUser.id, {
+        ...messageData,
+      });
+      //dataSocketIO.messages = [...dataSocketIO.messages, res.data];
+      setMessages([...messages, res.data]);
+    } catch (error) {
+      //toast.error(error.response.data.message);
+    }
+  };
+  //console.log("selectedUser", selectedUser);
+  const subscribeToMessages = (fakeSelectedUser: any, oldMessage: any) => {
+    console.log("subscribeToMessages running.....", { fakeSelectedUser });
+    console.log("oldMessage", oldMessage);
+
+    if (!fakeSelectedUser) return;
+
+    const socket = dataSocketIO.socket;
+    if (socket) {
+      socket.on("newMessage", (newMessage) => {
+        console.log("messs", messages);
+
+        console.log("newMessage", newMessage);
+        console.log("dataSocketIO.messages", dataSocketIO.messages);
+
+        const isMessageSentFromSelectedUser =
+          newMessage.senderId === fakeSelectedUser._id;
+        //if (!isMessageSentFromSelectedUser) return;
+        setMessages([...dataSocketIO.messages, newMessage]);
+        dataSocketIO.messages = [...dataSocketIO.messages, newMessage];
+        //setMessages([...messages, newMessage]);
+      });
+    }
+  };
+
+  const unsubscribeFromMessages = () => {
+    const socket = dataSocketIO.socket;
+    if (socket) socket.off("newMessage");
+  };
+
+  // const setSelectedUser = (selectedUser: any) => {
+  //   console.log("selectedUser", selectedUser);
+
+  //   dataSocketIO.selectedUser = selectedUser;
+  // };
+  //#endregion
+
   useEffect(() => {
     vertifyToken();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, user, login, register, logout }}
+      value={{
+        isAuthenticated,
+        user,
+        login,
+        register,
+        logout,
+        dataSocketIO,
+        selectedUser,
+        setSelectedUser,
+        messages,
+        setMessages,
+      }}
     >
       {children}
     </AuthContext.Provider>

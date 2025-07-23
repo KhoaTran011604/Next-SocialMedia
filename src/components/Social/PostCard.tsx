@@ -20,6 +20,7 @@ import { GetAllCommentsByPost, GetAllLikesByPost } from "@/api/socialService";
 import CommentItem from "./CommentItem";
 import LikeItem from "./LikeItem";
 import { useAuth } from "@/context/auth";
+import Link from "next/link";
 interface DataProps {
   likes: LikeResponse[];
   comments: CommentResponse[];
@@ -112,12 +113,12 @@ const PostCard = ({
                 className="h-10 w-10 rounded-full border border-gray-200 object-cover"
               />
             )}
-            <div className="ml-3">
+            <Link href={`/social/profile/${userId._id}`}>
               <div className="text-sm font-semibold text-gray-900 dark:text-white/90">
                 {userId.fullName}
               </div>
               <div className="text-xs text-gray-500">22/2/20219</div>
-            </div>
+            </Link>
           </div>
           <button className="text-gray-400 hover:text-gray-500">
             <MoreHorizontalIcon className="h-5 w-5" />

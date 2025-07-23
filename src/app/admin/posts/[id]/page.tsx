@@ -236,7 +236,7 @@ const PostDetailPage = () => {
           <div className="flex items-start justify-between py-4">
             <div className="flex items-center">
               <img
-                src={"/images/user/khoatran.jpg"}
+                src={"/images/user/default-user.png"}
                 alt={"Khoa Tran"}
                 className="h-10 w-10 rounded-full border border-gray-200 object-cover"
               />

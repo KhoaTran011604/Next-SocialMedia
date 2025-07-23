@@ -4,23 +4,24 @@ import ChatHeader from "@/components/Social/Message/ChatHeader";
 import MessageByUserItem from "@/components/Social/Message/MessageByUserItem";
 import MessageItem from "@/components/Social/Message/MessageItem";
 import SendMessComponent from "@/components/Social/Message/SendMessComponent";
-import { ChatMessage } from "@/types/MainType";
+import { useAuth } from "@/context/auth";
+import { socket } from "@/services/socket";
+import { ChatMessage, Message, User } from "@/types/MainType";
 import { useEffect, useRef, useState } from "react";
 
 const MainMessagePage = () => {
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-
+  const auth = useAuth();
   const [isBusy, setIsBusy] = useState(false);
-  const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
 
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-    }
-  }, [chatHistory]);
+  // useEffect(() => {
+  //   if (chatContainerRef.current) {
+  //     chatContainerRef.current.scrollTop =
+  //       chatContainerRef.current.scrollHeight;
+  //   }
+  // }, [chatHistory]);
 
   return (
     <div className="relative flex h-[calc(100vh-130px)] max-h-[calc(100vh+300px)] flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
@@ -51,7 +52,6 @@ const MainMessagePage = () => {
           </div>
         )}
       </div>
-
       <SendMessComponent
         setIsBusy={setIsBusy}
         chatHistory={chatHistory}

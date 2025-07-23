@@ -1,8 +1,11 @@
+import { useAuth } from "@/context/auth";
+import { formatMessageTime } from "@/lib/format-message-time";
 import React from "react";
 import { CiSquareMore } from "react-icons/ci";
 
 const MessageByUserItem = ({ data }: { data: any }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const auth = useAuth();
   function toggleDropdown() {
     setIsOpen(!isOpen);
   }
@@ -10,21 +13,27 @@ const MessageByUserItem = ({ data }: { data: any }) => {
   function closeDropdown() {
     setIsOpen(false);
   }
+  console.log(auth);
+
   return (
     <div className={`flex w-full justify-end`}>
       <div className="max-[200px] flex items-start gap-2.5">
         <img
           className="h-8 w-8 rounded-full"
-          src="/images/user/user-05.jpg"
+          src={
+            auth?.user.profilePic?.length > 0
+              ? auth?.user.profilePic
+              : "/images/user/default-user.png"
+          }
           alt="Jese image"
         />
         <div className="leading-1.5 flex w-full max-w-[320px] flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700">
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <span className="text-sm font-semibold text-gray-900 dark:text-white">
-              {data?.sendBy || "Khoa"}
+              {data?.authUser?.fullName || "Khoa"}
             </span>
             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-              {data?.createdAt || "12:00"}
+              {formatMessageTime(data?.createdAt) || "12:00"}
             </span>
           </div>
           <p className="whitespace-normal break-words py-2.5 text-sm font-normal text-gray-900 dark:text-white">

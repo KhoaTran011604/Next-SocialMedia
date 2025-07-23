@@ -24,6 +24,13 @@ export const NAV_DATA = [
         items: [],
       },
       {
+        title: "Messages",
+        url: "/social/message",
+        oAuth: false,
+        icon: Icons.Calendar,
+        items: [],
+      },
+      {
         title: "Notifications",
         url: "/social/notifications",
         oAuth: false,

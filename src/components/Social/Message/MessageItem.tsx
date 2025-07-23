@@ -1,3 +1,4 @@
+import { formatMessageTime } from "@/lib/utils";
 import React from "react";
 import { CiSquareMore } from "react-icons/ci";
 const MessageItem = ({ data }: { data: any }) => {
@@ -21,10 +22,10 @@ const MessageItem = ({ data }: { data: any }) => {
         <div className="leading-1.5 flex w-full max-w-[320px] flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700">
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <span className="text-sm font-semibold text-gray-900 dark:text-white">
-              {data?.sendBy || "BOT"}
+              {data?.authUser?.fullName || "BOT"}
             </span>
             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-              {data?.createdAt || "12:00"}
+              {formatMessageTime(data?.createdAt) || "12:00"}
             </span>
           </div>
           <p className="whitespace-normal break-words py-2.5 text-sm font-normal text-gray-900 dark:text-white">

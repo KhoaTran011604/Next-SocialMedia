@@ -22,8 +22,12 @@ export type Filter = {
 export type UserTokenPayload = {
   accessToken: string;
   userId: string;
+  id: string;
+  fullName?: string;
+  email?: string;
   exp?: number;
   iat?: number;
+  profilePic?: string;
 };
 
 export type InputFieldProps = {
@@ -149,3 +153,14 @@ export type ChatMessage = {
   content: string;
   [key: string]: any; // Nếu có thêm các field khác như time, id, etc.
 };
+
+export interface Message {
+  id: string;
+  message: string;
+  user: User;
+  timestamp: Date;
+}
+export interface User {
+  id: string;
+  username: string;
+}

@@ -48,9 +48,7 @@ const FriendRequest = () => {
               </div>
               <div className="mt-2 flex space-x-2">
                 <button
-                  onClick={() => {
-                    console.log("Click");
-                  }}
+                  onClick={() => {}}
                   className="rounded-md bg-blue-600 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-blue-700"
                 >
                   Accept

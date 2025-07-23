@@ -18,7 +18,6 @@ const dataInit = {
 const NewPost = () => {
   const zustand = useStore();
   const auth = useAuth();
-  console.log(auth);
 
   const { isLoading, setIsLoading, setHasDataChanged } = zustand;
   const [request, setRequest] = useState(dataInit);

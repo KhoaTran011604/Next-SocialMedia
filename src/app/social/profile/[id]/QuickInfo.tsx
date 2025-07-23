@@ -54,6 +54,35 @@ const QuickInfo = ({ data }: { data: ItemPostProps }) => {
               />
             </div>
           </div>
+
+          <div className="space-x-2">
+            <button className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700">
+              Add Friend
+            </button>
+            <Link
+              href={"/social/message"}
+              className="rounded-md bg-gray-200 px-4 py-2 text-sm font-medium hover:bg-gray-300"
+            >
+              Message
+            </Link>
+
+            <button className="rounded-full bg-gray-100 p-2 hover:bg-gray-200">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-gray-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 12h.01M12 12h.01M18 12h.01"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

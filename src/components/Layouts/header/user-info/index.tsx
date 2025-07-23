@@ -22,7 +22,10 @@ export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
-  const imagePath = "/images/user/khoatran.jpg";
+  const imagePath =
+    auth?.user?.profilePic?.length > 0
+      ? auth?.user?.profilePic
+      : "/images/user/default-user.png";
 
   return (
     <Dropdown isOpen={isOpen} setIsOpen={setIsOpen}>

@@ -1,10 +1,10 @@
 import React from "react";
-import MainMessagePage from "./MainPage";
+import MainMessagePage_v2 from "./MainPage-v2";
 
 const page = () => {
   return (
     <div>
-      <MainMessagePage />
+      <MainMessagePage_v2 />
     </div>
   );
 };
