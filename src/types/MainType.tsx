@@ -106,7 +106,7 @@ type TypeResponse = {
 export interface ItemPostProps {
   userId: { fullName: string; images: imageProps[]; _id: string };
   _id: string;
-  createdAt: Date;
+  createdAt: string;
   content: string;
   image?: imageProps[];
   hashTags: any[];
@@ -118,6 +118,7 @@ export interface ItemPostProps {
   handleLike: (data: LikePayload) => void;
   handleComment: (data: CommentPayload) => void;
   handleDeleteComment?: (id: string) => void;
+  isLike: boolean;
 }
 
 export interface VariantModalProps {
@@ -131,19 +132,21 @@ export interface VariantModalProps {
   textButtomClose: string;
   textButtomConfirm: string;
   hiddenButtomConfirm: boolean;
+  hiddenButtomClose?: boolean;
+  size?: string;
 }
 
 export interface LikeResponse {
   userId: { fullName: string; images: imageProps[]; _id: string };
   postId: string;
   _id: string;
-  createdAt: Date;
+  createdAt: string;
 }
 export interface CommentResponse {
   userId: { fullName: string; images: imageProps[]; _id: string };
   postId: string;
   _id: string;
-  createdAt: Date;
+  createdAt: string;
   content: string;
   parentId?: { _id: string; content: string; createdAt: Date };
 }

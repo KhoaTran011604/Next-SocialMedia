@@ -17,39 +17,10 @@ export const NAV_DATA = [
         ],
       },
       {
-        title: "#Explore",
-        url: "/social/explore",
-        oAuth: false,
-        icon: Icons.FourCircle,
-        items: [],
-      },
-      {
         title: "Messages",
         url: "/social/message",
         oAuth: false,
         icon: Icons.Calendar,
-        items: [],
-      },
-      {
-        title: "Notifications",
-        url: "/social/notifications",
-        oAuth: false,
-        icon: Icons.Alphabet,
-        items: [],
-      },
-      {
-        title: "Bookmarks",
-        url: "/social/bookmarks",
-        oAuth: false,
-        icon: Icons.Table,
-        items: [],
-      },
-
-      {
-        title: "Friends",
-        url: "/social/friends",
-        oAuth: false,
-        icon: Icons.User,
         items: [],
       },
       {
@@ -59,6 +30,37 @@ export const NAV_DATA = [
         icon: Icons.Authentication,
         items: [],
       },
+      // {
+      //   title: "#Explore",
+      //   url: "/social/explore",
+      //   oAuth: false,
+      //   icon: Icons.FourCircle,
+      //   items: [],
+      // },
+
+      // {
+      //   title: "Notifications",
+      //   url: "/social/notifications",
+      //   oAuth: false,
+      //   icon: Icons.Alphabet,
+      //   items: [],
+      // },
+      // {
+      //   title: "Bookmarks",
+      //   url: "/social/bookmarks",
+      //   oAuth: false,
+      //   icon: Icons.Table,
+      //   items: [],
+      // },
+
+      // {
+      //   title: "Friends",
+      //   url: "/social/friends",
+      //   oAuth: false,
+      //   icon: Icons.User,
+      //   items: [],
+      // },
+
 
 
     ],

@@ -1,5 +1,5 @@
 "use client";
-import { GetAllPost } from "@/api/postService";
+import { GetAllPostByUserId } from "@/api/postService";
 import { CreateComment, DeleteComment, LikeToggle } from "@/api/socialService";
 import PostCard from "@/components/Social/PostCard";
 import {
@@ -31,7 +31,7 @@ const PostList = () => {
       return;
     }
     setIsLoading(true);
-    GetAllPost(filterPage)
+    GetAllPostByUserId(filterPage)
       .then((response) => {
         if (response.success) {
           setData(response.data);

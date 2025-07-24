@@ -1,4 +1,5 @@
 "use client";
+import { formatMessageTime } from "@/lib/format-message-time";
 import { LikeResponse } from "@/types/MainType";
 
 const LikeItem = ({ like }: { like: LikeResponse }) => {
@@ -14,7 +15,7 @@ const LikeItem = ({ like }: { like: LikeResponse }) => {
           <h1 className="max-w-[150px] overflow-x-hidden truncate font-medium lg:max-w-[300px]">
             {like.userId.fullName}
           </h1>
-          <div className="text-sm">11:59</div>
+          <div className="text-sm">{formatMessageTime(like.createdAt)}</div>
         </div>
       </div>
     </div>

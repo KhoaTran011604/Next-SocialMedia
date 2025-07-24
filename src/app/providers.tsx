@@ -28,12 +28,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider defaultTheme="light" attribute="class">
       <QueryClientProvider client={queryClient}>
-         <AuthProvider>
-         {/* <SidebarProvider>
-            <ToastContainer /> */}
-        {children}
-        {/* </SidebarProvider>*/}
-        </AuthProvider> 
+        <AuthProvider>
+          {/* <SidebarProvider> */}
+          <ToastContainer />
+          {children}
+          {/* </SidebarProvider>*/}
+        </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ThemeProvider>

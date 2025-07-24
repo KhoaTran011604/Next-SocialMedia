@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import PostList from "./PostList";
 import QuickInfo from "./QuickInfo";
-import { GetAllPost } from "@/api/postService";
+import { GetAllPostByUserId } from "@/api/postService";
 import useStore from "@/zustand/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -26,15 +26,14 @@ const MainPage = () => {
   const { isLoading, setIsLoading, setHasDataChanged } = zustand;
   const [data, setData] = useState<ItemPostProps[]>([]);
   const [filterPage, setFilterPage] = useState<Filter>(filterInit);
-  const [userId, setUserId] = useState<string>("");
-  const LoadData = () => {
+  const LoadData = (userId: string) => {
     if (isLoading) {
       return;
     }
     setIsLoading(true);
     const newRequest = { ...filterPage, userId };
 
-    GetAllPost(newRequest)
+    GetAllPostByUserId(newRequest)
       .then((response) => {
         if (response.success) {
           setData(response.data);
@@ -47,11 +46,13 @@ const MainPage = () => {
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   };
+  console.log("auth", auth);
+
   useEffect(() => {
     scrollTo(0, 0);
     if (auth) {
-      setUserId(auth?.user?.id);
-      LoadData();
+      //setUserId(auth?.user?.id);
+      LoadData(auth?.user?.id);
     }
   }, [auth]);
   return (

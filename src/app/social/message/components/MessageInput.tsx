@@ -12,21 +12,21 @@ const MessageInput = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
-      return;
-    }
+  //   if (!file.type.startsWith("image/")) {
+  //     toast.error("Please select an image file");
+  //     return;
+  //   }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result as string); // result là string | ArrayBuffer
-    };
-    reader.readAsDataURL(file);
-  };
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setImagePreview(reader.result as string); // result là string | ArrayBuffer
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
 
   const removeImage = () => {
     setImagePreview(null);
@@ -99,21 +99,21 @@ const MessageInput = () => {
               }
             }}
           />
-          <input
+          {/* <input
             type="file"
             accept="image/*"
             className="hidden"
             ref={fileInputRef}
             onChange={handleImageChange}
-          />
+          /> */}
         </div>
-        <button
+        {/* <button
           type="button"
           className={`btn btn-circle hidden sm:flex ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
           onClick={() => fileInputRef.current?.click()}
         >
           <Image size={20} />
-        </button>
+        </button> */}
         <button
           onClick={handleSendMessage}
           className="btn btn-sm btn-circle cursor-pointer hover:text-primary"

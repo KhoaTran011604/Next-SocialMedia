@@ -66,7 +66,7 @@ export function UserInfo() {
         <h2 className="sr-only">User information</h2>
 
         <figure className="flex items-center gap-2.5 px-5 py-3.5">
-          <Image
+          <img
             src={imagePath}
             className="size-12 rounded-full"
             alt={`Avatar for ${auth?.user?.fullName}`}
@@ -89,6 +89,7 @@ export function UserInfo() {
         <div className="space-y-2 p-2 text-base text-[#4B5563] dark:text-dark-6 [&>*]:cursor-pointer">
           <Link
             href={"/admin"}
+            target="_blank"
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-200 hover:text-dark dark:bg-gray-800 dark:text-white/90 dark:hover:bg-dark-3 dark:hover:text-white"
           >
@@ -107,7 +108,7 @@ export function UserInfo() {
           </Link>
 
           <Link
-            href={"/pages/settings"}
+            href={"/social/settings"}
             onClick={() => setIsOpen(false)}
             className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-[9px] hover:bg-gray-200 hover:text-dark dark:bg-gray-800 dark:text-white/90 dark:hover:bg-dark-3 dark:hover:text-white"
           >

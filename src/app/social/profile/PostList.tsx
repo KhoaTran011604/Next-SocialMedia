@@ -1,21 +1,10 @@
 "use client";
-import { GetAllPost } from "@/api/postService";
-import PostCard from "@/components/Social/PostCard";
-import { useAuth } from "@/context/auth";
-import { Filter, ItemPostProps } from "@/types/MainType";
-import useStore from "@/zustand/store";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 
-const filterInit = {
-  keySearch: "",
-  sort: {},
-  page: 1,
-  pageSize: 10,
-  sessionCode: Math.random().toString(),
-  userId: "",
-};
-const PostList = ({ data }: { data: ItemPostProps }) => {
+import PostCard from "@/components/Social/PostCard";
+
+import { ItemPostProps } from "@/types/MainType";
+
+const PostList = ({ data }: { data: ItemPostProps[] }) => {
   return (
     <div>
       <div className="space-y-4">

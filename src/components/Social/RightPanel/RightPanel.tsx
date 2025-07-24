@@ -13,13 +13,13 @@ const RightPanel = () => {
       <FriendRequest />
       <YouMayKnowCard />
       <BirthdayCard />
-      <ActiveNowCard
+      {/* <ActiveNowCard
         users={[
           { initials: "AM", name: "Alex Morgan" },
           { initials: "JL", name: "Jessica Lee" },
           { initials: "RT", name: "Ryan Thompson" },
         ]}
-      />
+      /> */}
     </aside>
   );
 };

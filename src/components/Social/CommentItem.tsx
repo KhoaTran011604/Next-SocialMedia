@@ -5,6 +5,7 @@ import { LuReply } from "react-icons/lu";
 import { BiEditAlt } from "react-icons/bi";
 import { LuSendHorizontal } from "react-icons/lu";
 import { useAuth } from "@/context/auth";
+import { formatMessageTime } from "@/lib/format-message-time";
 
 const CommentItem = ({
   comment,
@@ -39,10 +40,10 @@ const CommentItem = ({
           alt="Current User"
           className="h-10 w-10 rounded-full border border-gray-200 object-cover"
         />
-        <div className="flex w-[90%] items-start justify-between">
+        <div className="flex w-[90%] items-start justify-between border-b border-gray-200 dark:border-gray-800">
           <div className="flex flex-col">
             <h1 className="max-w-[150px] overflow-x-hidden truncate font-medium lg:max-w-[300px]">
-              {comment.userId.fullName}
+              {`${comment.userId.fullName} - ${formatMessageTime(comment.createdAt)}`}
             </h1>
             <h1 className="max-w-[150px] overflow-x-hidden truncate lg:max-w-[300px]">
               {comment.content}

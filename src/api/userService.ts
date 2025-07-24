@@ -35,6 +35,12 @@ export async function UpdateUser_UploadMutli(id: string, request: any) {
 
     return await Proxy("post_multi", "/user/update-upload-multi/" + id, request);
 }
+
+export async function UpdateInfoByUser_UploadMulti(id: string, request: any) {
+
+    return await Proxy("post_multi", "/user/update-info-by-user/" + id, request);
+}
+
 export async function DeleteUser(id: string, request: any) {
 
     return await Proxy("post", "/user/delete/" + id, request);

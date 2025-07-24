@@ -13,10 +13,9 @@ import Pointer from "@/components/Social/Pointer";
 export const metadata: Metadata = {
   title: {
     template: "%s | FaceBook Clone",
-    default: "",
+    default: "Settings",
   },
-  description:
-    "Next.js admin dashboard toolkit with 200+ templates, UI components, and integrations for fast dashboard development.",
+  description: "",
 };
 
 export default function RootLayout({ children }: PropsWithChildren) {

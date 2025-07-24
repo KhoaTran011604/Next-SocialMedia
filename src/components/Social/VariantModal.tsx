@@ -12,6 +12,8 @@ export default function VariantModal({
   textButtomClose = "Close",
   textButtomConfirm = "Save Changes",
   hiddenButtomConfirm = false,
+  hiddenButtomClose = false,
+  size = "sm",
 }: VariantModalProps) {
   if (!open) return null;
   const variants: any = {
@@ -19,6 +21,12 @@ export default function VariantModal({
     success: "bg-green-600",
     warning: "bg-yellow-300",
     error: "bg-red-400",
+  };
+
+  const sizes: any = {
+    sm: "max-w-[600px]",
+    medium: "max-w-[900px]",
+    lg: "max-w-[70vw]",
   };
 
   return (
@@ -30,7 +38,9 @@ export default function VariantModal({
           onClose();
         }}
       ></div>
-      <div className="custom-scrollbar relative max-h-[calc(100vh-20px)] w-full max-w-[600px] overflow-y-auto rounded-3xl bg-white dark:bg-gray-900">
+      <div
+        className={`custom-scrollbar relative max-h-[calc(100vh-20px)] w-full ${sizes[size]} overflow-y-auto rounded-3xl bg-white dark:bg-gray-900`}
+      >
         {/* Close button */}
         <div
           className={`full w-full pl-6 pr-6 pt-6 lg:pl-10 lg:pr-10 lg:pt-10 ${variants[variant]}`}
@@ -68,16 +78,19 @@ export default function VariantModal({
           </div>
 
           <div className="mt-8 flex w-full items-center justify-end gap-3">
-            <button
-              onClick={() => {
-                setOpen(false);
-                onClose();
-              }}
-              type="button"
-              className="shadow-theme-xs flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto"
-            >
-              {textButtomClose}
-            </button>
+            {!hiddenButtomClose && (
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  onClose();
+                }}
+                type="button"
+                className="shadow-theme-xs flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto"
+              >
+                {textButtomClose}
+              </button>
+            )}
+
             {!hiddenButtomConfirm && (
               <button
                 onClick={onConfirm}

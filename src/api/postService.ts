@@ -55,3 +55,8 @@ export async function ExportAllPost() {
 
     return await Proxy("post", "/post/export-all");
 }
+
+export async function GetAllPostByUserId(request: any) {
+
+    return await Proxy("post", "/post/get-all-by-user-id", request);
+}

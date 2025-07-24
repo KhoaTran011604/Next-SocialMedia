@@ -24,7 +24,6 @@ const ChatContainer = () => {
   } = auth.dataSocketIO;
 
   const { selectedUser, messages } = auth;
-  console.log("messages.number", messages);
 
   const messageEndRef = useRef<HTMLDivElement | null>(null);
 

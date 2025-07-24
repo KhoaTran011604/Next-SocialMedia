@@ -14,11 +14,13 @@ import HyperFormWrapper from "@/components/HyperFormWrapper";
 import LottieComponent from "@/components/lotties/lottie";
 import Select from "@/components/Select";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/auth";
 import { PostStatus } from "@/enum/postEnum";
+import { formatMessageTime } from "@/lib/format-message-time";
 //import { PostStatus } from "@/enum/postEnum";
 import { postSchema } from "@/shemas/postSchema";
 
-import { imageProps } from "@/types/MainType";
+import { imageProps, LikeResponse } from "@/types/MainType";
 import useStore from "@/zustand/store";
 import { MoreHorizontalIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -26,19 +28,36 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const TYPE_OF_DATA_IMG_RETURN = "file";
-const dataInit = {
-  userId: "687b3b0ec73bbfbe7a30237f",
-  content: "",
-  status: PostStatus.disApprove,
-  hashTags: [],
-  images: [],
-  likes: [],
-  comments: [],
-};
 
 const PostDetailPage = () => {
   const params = useParams();
   const id = params?.id as string;
+  const auth = useAuth();
+
+  interface PostDetailProps {
+    userId: string;
+    content: string;
+    status: string;
+    hashTags: any;
+    images: imageProps[];
+    likes: any;
+    comments: any;
+    userName: string;
+    userImages: any;
+    createdAt: string;
+  }
+  const dataInit = {
+    userId: "",
+    content: "",
+    status: PostStatus.disApprove,
+    hashTags: [],
+    images: [],
+    likes: [],
+    comments: [],
+    userName: "",
+    userImages: [],
+    createdAt: new Date().toISOString(),
+  };
   const router = useRouter();
   const zustand = useStore();
   const { setHasDataChanged } = zustand;
@@ -48,22 +67,8 @@ const PostDetailPage = () => {
   const [deleteImages, setDeleteImages] = useState<imageProps[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const [request, setRequest] = useState(dataInit);
+  const [request, setRequest] = useState<PostDetailProps>(dataInit);
 
-  const [categories, setCategories] = useState([
-    {
-      _id: "id-1",
-      name: "Quần áo ",
-    },
-    {
-      _id: "id-2",
-      name: "Quần giày dép ",
-    },
-    {
-      _id: "id-3",
-      name: "Khác",
-    },
-  ]);
   const SaveData = async () => {
     if (isBusy) {
       return;
@@ -190,18 +195,6 @@ const PostDetailPage = () => {
       }
     });
   };
-  const LoadDataFK = async () => {
-    GetAllCategoryFK({})
-      .then((res) => {
-        if (res.success) {
-          setCategories(res.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {});
-  };
 
   const handleDeleteImage = (img: any) => {
     var indexToRemove = images.indexOf(img);
@@ -215,10 +208,26 @@ const PostDetailPage = () => {
   };
 
   useEffect(() => {
-    LoadDataFK();
     if (id !== undefined && id !== "add") {
       setIsEdit(true);
       LoadData();
+    } else {
+      console.log(auth);
+
+      setRequest({
+        ...request,
+        userId: auth?.user?.id,
+        userName: auth?.user?.fullName,
+        userImages:
+          auth?.user?.profilePic.length > 0
+            ? [
+                {
+                  imageAbsolutePath: auth?.user?.profilePic,
+                },
+              ]
+            : [],
+        createdAt: new Date().toISOString(),
+      });
     }
   }, [id]);
   return (
@@ -236,15 +245,25 @@ const PostDetailPage = () => {
           <div className="flex items-start justify-between py-4">
             <div className="flex items-center">
               <img
-                src={"/images/user/default-user.png"}
-                alt={"Khoa Tran"}
+                src={
+                  request.userImages?.length > 0
+                    ? request.userImages[0]?.imageAbsolutePath
+                    : "/images/user/default-user.png"
+                }
+                alt={`Avatar ${request?.userName}`}
                 className="h-10 w-10 rounded-full border border-gray-200 object-cover"
               />
               <div className="ml-3">
                 <div className="text-sm font-semibold text-gray-900 dark:text-white/90">
-                  {"Khoa Tran"}
+                  {request?.userName}
                 </div>
-                <div className="text-xs text-gray-500">{"11/22/2020"}</div>
+                <div className="text-xs text-gray-500">
+                  {formatMessageTime(
+                    request?.createdAt
+                      ? request?.createdAt
+                      : new Date().toISOString(),
+                  )}
+                </div>
               </div>
             </div>
           </div>

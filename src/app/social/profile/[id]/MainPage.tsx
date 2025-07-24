@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import PostList from "./PostList";
 import QuickInfo from "./QuickInfo";
-import { GetAllPost } from "@/api/postService";
+import { GetAllPostByUserId } from "@/api/postService";
 import useStore from "@/zustand/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
@@ -34,7 +34,7 @@ const MainPage = () => {
     setIsLoading(true);
     const newRequest = { ...filterPage, userId };
 
-    GetAllPost(newRequest)
+    GetAllPostByUserId(newRequest)
       .then((response) => {
         if (response.success) {
           setData(response.data);

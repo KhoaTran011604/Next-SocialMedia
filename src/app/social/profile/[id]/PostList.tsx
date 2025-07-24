@@ -1,12 +1,8 @@
 "use client";
-import { GetAllPost } from "@/api/postService";
+
 import PostCard from "@/components/Social/PostCard";
-import { useAuth } from "@/context/auth";
-import { Filter, ItemPostProps } from "@/types/MainType";
-import useStore from "@/zustand/store";
-import { useQueryClient } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+
+import { ItemPostProps } from "@/types/MainType";
 
 const PostList = ({ data }: { data: ItemPostProps[] }) => {
   return (

@@ -128,8 +128,6 @@ const AuthContext = createContext<AuthContextType>({
   setMessages: (data) => {},
 });
 
-const BASE_URL = "http://localhost:5000";
-
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -154,7 +152,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (res.success) {
       const dataToken = getDataFromToken(res.data.accessToken);
-      console.log("dataToken", dataToken);
 
       if (dataToken) {
         setUser(dataToken);
@@ -267,6 +264,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const LOCAL_SOCKET_URL = "http://localhost:5000";
+  const PUBLIC_SOCKET_URL = "https://server-next-socialmedia.onrender.com";
   //#region SocketIO
 
   const connectSocket = () => {
@@ -274,7 +273,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (!authUser || dataSocketIO.socket?.connected) return;
 
-    const socket = io(BASE_URL, {
+    const socket = io(PUBLIC_SOCKET_URL, {
       query: {
         userId: authUser.id,
       },
@@ -323,8 +322,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
   const sendMessage = async (messageData: any) => {
     try {
-      console.log("Send");
-
       const res = await SendMessage(selectedUser.id, {
         ...messageData,
       });
@@ -334,24 +331,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       //toast.error(error.response.data.message);
     }
   };
-  //console.log("selectedUser", selectedUser);
   const subscribeToMessages = (fakeSelectedUser: any, oldMessage: any) => {
-    console.log("subscribeToMessages running.....", { fakeSelectedUser });
-    console.log("oldMessage", oldMessage);
-
     if (!fakeSelectedUser) return;
 
     const socket = dataSocketIO.socket;
     if (socket) {
       socket.on("newMessage", (newMessage) => {
-        console.log("messs", messages);
-
-        console.log("newMessage", newMessage);
-        console.log("dataSocketIO.messages", dataSocketIO.messages);
-
         const isMessageSentFromSelectedUser =
           newMessage.senderId === fakeSelectedUser._id;
-        //if (!isMessageSentFromSelectedUser) return;
+
+        if (!isMessageSentFromSelectedUser) return;
         setMessages([...dataSocketIO.messages, newMessage]);
         dataSocketIO.messages = [...dataSocketIO.messages, newMessage];
         //setMessages([...messages, newMessage]);
@@ -364,11 +353,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (socket) socket.off("newMessage");
   };
 
-  // const setSelectedUser = (selectedUser: any) => {
-  //   console.log("selectedUser", selectedUser);
-
-  //   dataSocketIO.selectedUser = selectedUser;
-  // };
   //#endregion
 
   useEffect(() => {

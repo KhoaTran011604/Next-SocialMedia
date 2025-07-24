@@ -75,7 +75,7 @@ const UserDetailPage = () => {
           toast.success("Create Success !", {
             position: "bottom-right",
           });
-          router.push("/users");
+          router.push("/admin/users");
         } else {
           toast.error("Create Fail !", {
             position: "bottom-right",
@@ -127,7 +127,7 @@ const UserDetailPage = () => {
       .then((response) => {
         if (response.success) {
           setHasDataChanged(true);
-          router.push("/users");
+          router.push("/admin/users");
           toast.success("Update Success !", {
             position: "bottom-right",
           });
@@ -370,15 +370,13 @@ const UserDetailPage = () => {
                   <DropzoneComponentV2
                     title={"Images"}
                     name={"images-upload"}
-                    multiple={true}
+                    multiple={false}
                     typeDataReturn={TYPE_OF_DATA_IMG_RETURN}
                     imagesInit={images}
                     onUpload={(dataReturn) => {
                       setImages(dataReturn);
                     }}
                   />
-                </div>
-                <div className="mt-4">
                   {images?.length > 0 &&
                     images.map((itemImg) => (
                       <div key={Math.random()}>

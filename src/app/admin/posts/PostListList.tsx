@@ -148,7 +148,7 @@ export default function PostList({ initialPosts }: { initialPosts: Post[] }) {
               src={
                 info.row.original.images.length > 0
                   ? info.row.original.images[0].imageAbsolutePath
-                  : "/images/empty.png"
+                  : "/images/no-image.png"
               }
               loading="lazy"
               className="aspect-[6/5] w-15 rounded-[5px] object-cover"
@@ -219,11 +219,7 @@ export default function PostList({ initialPosts }: { initialPosts: Post[] }) {
     columnHelper.accessor("hashTags", {
       header: (info) => <DefaultHeader info={info} name="Hash Tags" />,
       cell: (info) => {
-        return (
-          <div className="rounded-lg bg-gray-500 bg-gray-600 p-1 text-white">
-            {"#facebook"}
-          </div>
-        );
+        return <div className="rounded-lg bg-gray-600 text-white">{}</div>;
       },
     }),
     columnHelper.display({
