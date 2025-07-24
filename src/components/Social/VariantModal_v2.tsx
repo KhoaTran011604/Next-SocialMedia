@@ -1,21 +1,23 @@
-import { VariantModalProps } from "@/types/MainType";
-import React from "react";
+"use client";
+import { useModal } from "@/context/modal";
 
-export default function VariantModal({
-  open,
-  setOpen,
-  variant = "base",
-  title,
-  children,
-  onClose = () => {},
-  onConfirm,
-  textButtomClose = "Close",
-  textButtomConfirm = "Save Changes",
-  hiddenButtomConfirm = false,
-  hiddenButtomClose = false,
-  size = "sm",
-}: VariantModalProps) {
-  if (!open) return null;
+export const VariantModal_v2 = () => {
+  const { open, setOpen, content, customStyle } = useModal();
+
+  if (!open || !content) return null;
+  const {
+    variant,
+    title,
+    children,
+    onClose,
+    onConfirm,
+    textButtomClose,
+    textButtomConfirm,
+    hiddenButtomConfirm,
+    hiddenButtomClose,
+    size,
+  } = customStyle;
+
   const variants: any = {
     base: "",
     success: "bg-green-600",
@@ -35,7 +37,7 @@ export default function VariantModal({
         className="fixed inset-0 h-full w-full bg-gray-400/50 opacity-70 backdrop-blur-[32px]"
         onClick={() => {
           setOpen(false);
-          onClose();
+          //onClose();
         }}
       ></div>
       <div
@@ -48,7 +50,7 @@ export default function VariantModal({
           <button
             onClick={() => {
               setOpen(false);
-              onClose();
+              //onClose();
             }}
             className="absolute right-3 top-3 z-10 flex h-9.5 w-9.5 items-center justify-center rounded-full bg-gray-100 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white sm:right-6 sm:top-6 sm:h-11 sm:w-11"
           >
@@ -74,7 +76,7 @@ export default function VariantModal({
 
         <div className="pb-6 pl-6 pr-6 lg:pb-10 lg:pl-10 lg:pr-10">
           <div className={`text-sm leading-6 text-gray-500 dark:text-gray-400`}>
-            {children}
+            {content}
           </div>
 
           <div className="mt-8 flex w-full items-center justify-end gap-3">
@@ -82,7 +84,7 @@ export default function VariantModal({
               <button
                 onClick={() => {
                   setOpen(false);
-                  onClose();
+                  //onClose();
                 }}
                 type="button"
                 className="shadow-theme-xs flex w-full justify-center rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 sm:w-auto"
@@ -105,4 +107,4 @@ export default function VariantModal({
       </div>
     </div>
   );
-}
+};

@@ -130,7 +130,7 @@ const PostCard = ({
               </div>
             </Link>
           </div>
-          {userId._id === auth?.user.id && (
+          {userId._id === auth?.user?.id && (
             <button className="text-gray-400 hover:text-gray-500">
               <MoreHorizontalIcon className="h-5 w-5" />
             </button>

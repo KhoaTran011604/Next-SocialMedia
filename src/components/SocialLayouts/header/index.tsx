@@ -15,7 +15,7 @@ export function Header() {
   const { toggleSidebar, isMobile } = useSidebarSocialContext();
 
   return (
-    <header className="sticky top-0 z-1 flex items-center justify-between gap-4 space-x-0 border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-900 md:px-5 2xl:px-10">
+    <header className="sticky top-0 z-10 flex items-center justify-between gap-4 space-x-0 border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-900 md:px-5 2xl:px-10">
       <button
         onClick={toggleSidebar}
         className="rounded-lg border px-1.5 py-1 dark:border-stroke-dark dark:bg-[#020D1A] dark:text-white/90 hover:dark:bg-[#FFFFFF1A] sm:block md:hidden lg:hidden"
@@ -26,7 +26,7 @@ export function Header() {
 
       {isMobile && (
         <Link
-          href={"/admin"}
+          href={"/social"}
           className="ml-2 max-[430px]:hidden min-[375px]:ml-4"
         >
           <Image
@@ -39,12 +39,12 @@ export function Header() {
         </Link>
       )}
 
-      <div className="w-64 max-xl:hidden">
+      <Link href={"/social"} className="w-64 max-xl:hidden">
         <h1 className="mb-0.5 text-heading-5 font-bold text-primary dark:text-cyan-800">
           FACEBOOK
         </h1>
         <p className="font-medium text-primary dark:text-cyan-800">Clone</p>
-      </div>
+      </Link>
       <div className="pm-32 relative w-full max-w-[150px] lg:max-w-[300px]">
         <input
           type="search"

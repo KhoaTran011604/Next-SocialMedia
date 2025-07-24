@@ -58,6 +58,7 @@ export function Sidebar() {
       )}
 
       <aside
+        style={{ zIndex: 0 }}
         className={cn(
           "max-w-[290px] overflow-hidden bg-transparent p-0 transition-[width] duration-200 ease-linear dark:text-white/90 lg:p-4",
           isMobile ? "fixed bottom-0 top-0 z-50" : "sticky top-0 h-screen",

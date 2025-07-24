@@ -122,7 +122,7 @@ const MainPage = () => {
           imageFile: file,
           isNewUpload: true,
         };
-        console.log("data return", dataUpload);
+
         setImages([dataUpload]);
       };
       reader.readAsDataURL(file);

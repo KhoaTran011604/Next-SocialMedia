@@ -18,6 +18,8 @@ import { CloseIcon } from "@/assets/icons";
 import DropzoneComponentV2 from "@/components/common/DropZoneV2";
 import HD_TextArea from "@/components/common/HD_TextArea";
 import VariantModal from "@/components/Social/VariantModal";
+import { useModal } from "@/context/modal";
+import NewPostComponent from "./NewPostComponent";
 
 const TYPE_OF_DATA_IMG_RETURN = "file";
 const dataInit = {
@@ -34,8 +36,10 @@ const NewPost = () => {
   const id = params?.id as string;
   const zustand = useStore();
   const auth = useAuth();
+  const dataModal = useModal();
+  const { open, setOpen, customStyle, setCustomStyle, setContent } = dataModal;
   const [isBusy, setIsBusy] = useState(false);
-  const [open, setOpen] = useState(false);
+  //const [open, setOpen] = useState(false);
   const { isLoading, setIsLoading, setHasDataChanged } = zustand;
   const [request, setRequest] = useState(dataInit);
   const [images, setImages] = useState<imageProps[]>([]);
@@ -53,7 +57,7 @@ const NewPost = () => {
       return;
     }
     setIsLoading(true);
-    console.log("auth.user.fullName post", auth.user.fullName);
+
     return;
   };
 
@@ -189,6 +193,7 @@ const NewPost = () => {
       setRequest({ ...request, userId: auth?.user?.id });
     }
   }, [auth]);
+  console.log(dataModal);
 
   return (
     <div className="mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -220,7 +225,21 @@ const NewPost = () => {
           <div className="mb-2 flex space-x-2 sm:mb-0">
             {/* Photo */}
             <button
-              onClick={() => setOpen(true)}
+              onClick={() => {
+                setOpen(true);
+                setCustomStyle({
+                  ...customStyle,
+                  title: "New Post",
+                  onConfirm: () => {},
+                  hiddenButtomConfirm: true,
+                  hiddenButtomClose: true,
+                  textButtomClose: "Close",
+                  variant: "",
+                  textButtomConfirm: "",
+                  size: "lg",
+                });
+                setContent(<NewPostComponent />);
+              }}
               type="button"
               className="flex items-center rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
             >
@@ -305,7 +324,7 @@ const NewPost = () => {
         </div>
       </div>
 
-      <VariantModal
+      {/* <VariantModal
         open={open}
         setOpen={setOpen}
         onClose={() => {
@@ -398,7 +417,7 @@ const NewPost = () => {
             </div>
           </div>
         </HyperFormWrapper>
-      </VariantModal>
+      </VariantModal> */}
     </div>
   );
 };
