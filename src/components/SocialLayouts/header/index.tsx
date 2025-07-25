@@ -15,7 +15,7 @@ export function Header() {
   const { toggleSidebar, isMobile } = useSidebarSocialContext();
 
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between gap-4 space-x-0 border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-900 md:px-5 2xl:px-10">
+    <header className="sticky top-0 z-1 flex items-center justify-between gap-4 space-x-0 border-b border-stroke bg-white px-4 py-5 shadow-1 dark:border-stroke-dark dark:bg-gray-900 md:px-5 2xl:px-10">
       <button
         onClick={toggleSidebar}
         className="rounded-lg border px-1.5 py-1 dark:border-stroke-dark dark:bg-[#020D1A] dark:text-white/90 hover:dark:bg-[#FFFFFF1A] sm:block md:hidden lg:hidden"

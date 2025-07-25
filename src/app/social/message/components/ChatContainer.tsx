@@ -66,7 +66,7 @@ const ChatContainer = () => {
         {messages?.length > 0 &&
           messages.map((message: any) => (
             <div
-              key={message._id}
+              key={Math.random()}
               className={`chat ${message.senderId === authUser?.id ? "self-end" : "self-start"}`}
               ref={messageEndRef}
             >

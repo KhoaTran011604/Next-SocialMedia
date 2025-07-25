@@ -14,6 +14,7 @@ import {
 } from "@/api/socialService";
 import { UserTokenPayload } from "@/types/MainType";
 import { BaseResponse } from "@/api/BaseResponse";
+import { toast } from "react-toastify";
 
 type AuthPayload = {
   email: string;
@@ -286,6 +287,36 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     dataSocketIO.socket.on("getOnlineUsers", (userIds) => {
       dataSocketIO.onlineUsers = userIds;
     });
+
+    socket.on("newMessage", (newMessage) => {
+      const isToMe = newMessage.receiverId === authUser.id;
+      if (isToMe) {
+        toast.info(
+          <div onClick={() => router.push("/social/message")}>
+            <span className="cursor-pointer">
+              {`📩 Tin nhắn mới từ ${newMessage.senderName || "ai đó"}`}
+            </span>
+          </div>,
+          {
+            position: "bottom-right",
+          },
+        );
+      }
+
+      // if (isToMe) {
+      //   const updatedMessages = [...dataSocketIO.messages, newMessage];
+      //   dataSocketIO.messages = updatedMessages;
+      //   setMessages(updatedMessages);
+
+      //   // ✅ Nếu đang chat với người gửi, hiển thị luôn
+      //   if (isFromSelectedUser) {
+      //     // đã thêm ở trên rồi
+      //   } else {
+      //     // ✅ Nếu không phải người đang chat, có thể hiển thị toast
+      //     // toast.info(`Tin nhắn mới từ ${newMessage.senderName || "ai đó"}`);
+      //   }
+      // }
+    });
   };
   const disconnectSocket = () => {
     if (dataSocketIO.socket?.connected) dataSocketIO.socket.disconnect();
@@ -332,6 +363,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       //toast.error(error.response.data.message);
     }
   };
+
   const subscribeToMessages = (fakeSelectedUser: any, oldMessage: any) => {
     if (!fakeSelectedUser) return;
 

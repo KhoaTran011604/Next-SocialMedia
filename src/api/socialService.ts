@@ -48,3 +48,8 @@ export async function SendMessage(userToChatId: string, request: any) {
 
     return await Proxy("post", "/message/send/" + userToChatId, request);
 }
+
+export async function SendMessageWithImage(userToChatId: string, request: any) {
+
+    return await Proxy("post_multi", "/message/send-with-image/" + userToChatId, request);
+}

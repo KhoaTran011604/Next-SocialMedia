@@ -14,6 +14,8 @@ const MessageByUserItem = ({ data }: { data: any }) => {
     setIsOpen(false);
   }
 
+  console.log("data-image", data);
+
   return (
     <div className={`flex w-full justify-end`}>
       <div className="max-[200px] flex items-start gap-2.5">
@@ -38,6 +40,9 @@ const MessageByUserItem = ({ data }: { data: any }) => {
           <p className="whitespace-normal break-words py-2.5 text-sm font-normal text-gray-900 dark:text-white">
             {data?.text}
           </p>
+          {data.image && (
+            <img src={data.image} alt={data.image} srcSet={data.image} />
+          )}
         </div>
         <div className="relative inline-block">
           <button
