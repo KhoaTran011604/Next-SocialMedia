@@ -3,13 +3,10 @@ import { useRef, useState } from "react";
 import { Image, Send, X } from "lucide-react";
 
 import { useAuth } from "@/context/auth";
-import { toast } from "react-toastify";
 import { SendMessage, SendMessageWithImage } from "@/api/socialService";
 import { imageProps } from "@/types/MainType";
 import { IoMdClose } from "react-icons/io";
-import { BsEmojiSmile, BsEmojiSunglasses } from "react-icons/bs";
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
+
 const MessageInput = () => {
   const auth = useAuth();
   const [isBusy, setIsBusy] = useState<boolean>(false);
@@ -18,7 +15,7 @@ const MessageInput = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [images, setImages] = useState<imageProps[]>([]);
-  const [showEmoji, setShowEmoji] = useState(false);
+  //const [showEmoji, setShowEmoji] = useState(false);
 
   const handleImageUpload = (file: any) => {
     if (file) {
@@ -111,12 +108,12 @@ const MessageInput = () => {
     return formData;
   };
 
-  const addEmoji = (e: { unified: string }) => {
-    const sym = e.unified.split("_");
-    const codeArray = sym.map((el) => parseInt(el, 16));
-    const emoji = String.fromCodePoint(...codeArray);
-    setText((prev) => prev + emoji);
-  };
+  // const addEmoji = (e: { unified: string }) => {
+  //   const sym = e.unified.split("_");
+  //   const codeArray = sym.map((el) => parseInt(el, 16));
+  //   const emoji = String.fromCodePoint(...codeArray);
+  //   setText((prev) => prev + emoji);
+  // };
 
   return (
     <div className="w-full p-4">
@@ -177,7 +174,7 @@ const MessageInput = () => {
         >
           <Send size={22} />
         </button>
-        <span
+        {/* <span
           onClick={() => setShowEmoji(!showEmoji)}
           className="cursor-pointer hover:text-primary"
         >
@@ -199,7 +196,7 @@ const MessageInput = () => {
               maxFrequentRows={0}
             />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
