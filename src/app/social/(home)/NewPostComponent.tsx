@@ -191,7 +191,6 @@ const NewPostComponent = () => {
       setRequest({ ...request, userId: auth?.user?.id });
     }
   }, [auth]);
-  console.log(dataModal);
 
   return (
     <HyperFormWrapper

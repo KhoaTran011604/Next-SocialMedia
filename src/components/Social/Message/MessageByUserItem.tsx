@@ -13,7 +13,6 @@ const MessageByUserItem = ({ data }: { data: any }) => {
   function closeDropdown() {
     setIsOpen(false);
   }
-  console.log(auth);
 
   return (
     <div className={`flex w-full justify-end`}>

@@ -29,6 +29,8 @@ export interface ModalProps {
 interface ModalContextType {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  openModalLike: boolean;
+  setOpenModalLike: Dispatch<SetStateAction<boolean>>;
   onClose: any;
   setOnClose: Dispatch<SetStateAction<any>>;
   setContent: (content: ReactNode) => void;
@@ -52,7 +54,8 @@ const initCustomStyle = {
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
+  const [openModalLike, setOpenModalLike] = useState<boolean>(false);
   const [onClose, setOnClose] = useState<any>(() => {});
   const [content, setContentState] = useState<ReactNode | null>(null);
   const [customStyle, setCustomStyle] = useState<ModalProps>(initCustomStyle);
@@ -67,6 +70,8 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
       value={{
         open,
         setOpen,
+        openModalLike,
+        setOpenModalLike,
         onClose,
         setOnClose,
         setContent,

@@ -22,7 +22,6 @@ export function UserInfo() {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const queryClient = useQueryClient();
-  console.log(auth);
 
   const imagePath =
     auth?.user?.profilePic?.length > 0

@@ -5,7 +5,6 @@ const ChatHeader = () => {
   const auth = useAuth();
   const { onlineUsers } = auth.dataSocketIO;
   const { selectedUser, setSelectedUser } = auth;
-  console.log(selectedUser);
 
   return (
     <div className="border-base-300 border-b p-2.5">

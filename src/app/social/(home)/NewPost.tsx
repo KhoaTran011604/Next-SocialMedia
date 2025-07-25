@@ -193,7 +193,6 @@ const NewPost = () => {
       setRequest({ ...request, userId: auth?.user?.id });
     }
   }, [auth]);
-  console.log(dataModal);
 
   return (
     <div className="mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -323,101 +322,6 @@ const NewPost = () => {
           </button>
         </div>
       </div>
-
-      {/* <VariantModal
-        open={open}
-        setOpen={setOpen}
-        onClose={() => {
-          setOpen(false);
-        }}
-        title={"List Comment"}
-        onConfirm={() => {}}
-        hiddenButtomConfirm={true}
-        hiddenButtomClose={true}
-        textButtomClose="Close"
-        variant=""
-        textButtomConfirm=""
-        size="lg"
-      >
-        <HyperFormWrapper
-          schema={postSchema}
-          defaultValues={request}
-          onSubmit={isEdit ? UpdateData : SaveData}
-          className="grid grid-cols-1 gap-6 md:grid-cols-4"
-        >
-          <div className="col-span-1 md:col-span-4">
-            <HD_TextArea
-              title="Content"
-              name="content"
-              placeholder=""
-              isItemForm={true}
-              initValue={request.content}
-              onChange={(value: any) =>
-                setRequest({
-                  ...request,
-                  content: value,
-                })
-              }
-            />
-          </div>
-
-          <div className="col-span-1 md:col-span-4">
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-1">
-              <div className="">
-                <DropzoneComponentV2
-                  title={"Images"}
-                  name={"images-upload"}
-                  multiple={true}
-                  typeDataReturn={TYPE_OF_DATA_IMG_RETURN}
-                  imagesInit={images}
-                  onUpload={(dataReturn: any) => {
-                    setImages(dataReturn);
-                  }}
-                />
-              </div>
-              <div className="mt-4">
-                {images?.length > 0 &&
-                  images.map((itemImg) => (
-                    <div key={Math.random()}>
-                      {(itemImg.imageBase64String != "" ||
-                        itemImg.imageAbsolutePath != "") && (
-                        <div className="relative my-4 flex items-center space-x-4 rounded-lg border border-gray-300 p-2 dark:border-gray-700">
-                          <div className="h-[100px] w-[100px]">
-                            <img
-                              src={
-                                itemImg.isNewUpload
-                                  ? itemImg.imageBase64String
-                                  : itemImg.imageAbsolutePath
-                              }
-                              className="h-full w-full rounded-sm"
-                              style={{ objectFit: "cover" }}
-                            />
-                            <div
-                              className="absolute right-0 top-0 -translate-y-2 translate-x-2 rounded-lg bg-gray-800 p-2 text-white hover:bg-red-500 dark:bg-white dark:text-black"
-                              onClick={() => {
-                                handleDeleteImage(itemImg);
-                              }}
-                            >
-                              <CloseIcon className="size-5" />
-                            </div>
-                          </div>
-                          <h3 className="flex-1 truncate text-lg">
-                            {itemImg.fileName}
-                          </h3>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-              </div>
-            </div>
-          </div>
-          <div className="col-span-1 flex justify-end py-2 md:col-span-4">
-            <div>
-              <Button type="submit">Post</Button>
-            </div>
-          </div>
-        </HyperFormWrapper>
-      </VariantModal> */}
     </div>
   );
 };

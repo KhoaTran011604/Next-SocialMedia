@@ -46,7 +46,6 @@ const MainPage = () => {
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false));
   };
-  console.log("auth", auth);
 
   useEffect(() => {
     scrollTo(0, 0);

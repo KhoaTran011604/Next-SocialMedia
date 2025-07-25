@@ -1,28 +1,102 @@
 "use client";
-import { CommentPayload, CommentResponse } from "@/types/MainType";
-import { useState } from "react";
+import {
+  CommentPayload,
+  CommentResponse,
+  DataProps,
+  fakeDataProps,
+} from "@/types/MainType";
+import { Dispatch, KeyboardEvent, SetStateAction, useState } from "react";
 import { LuReply } from "react-icons/lu";
 import { BiEditAlt } from "react-icons/bi";
 import { LuSendHorizontal } from "react-icons/lu";
 import { useAuth } from "@/context/auth";
 import { formatMessageTime } from "@/lib/format-message-time";
+import { toast } from "react-toastify";
 
 const CommentItem = ({
   comment,
   handleComment,
+  fakeDataPostCard,
+  setFakeDataPostCard,
+  fakeDataBoxComments,
+  setFakeDataBoxComments,
 }: {
   comment: CommentResponse;
   handleComment: (data: CommentPayload) => void;
+  fakeDataPostCard: fakeDataProps;
+  setFakeDataPostCard: Dispatch<SetStateAction<fakeDataProps>>;
+  fakeDataBoxComments: DataProps;
+  setFakeDataBoxComments: Dispatch<SetStateAction<DataProps>>;
 }) => {
+  const auth = useAuth();
+  const justNow = new Date().toISOString();
   const initRequest = {
     userId: "",
     postId: comment.postId,
     content: "",
     parentId: comment._id,
+    createdAt: justNow,
   };
-  const auth = useAuth();
+
   const [isRepply, setIsRepply] = useState<boolean>(false);
   const [request, setRequest] = useState<CommentPayload>(initRequest);
+
+  const handleSubmit = () => {
+    handleComment(request);
+    toast.success("completed", {
+      position: "bottom-right",
+    });
+    setFakeDataPostCard({
+      ...fakeDataPostCard,
+      fakeCommentNum: fakeDataPostCard.fakeCommentNum + 1,
+    });
+    const justNow = new Date().toISOString();
+    setFakeDataBoxComments({
+      ...fakeDataBoxComments,
+      comments: [
+        ...fakeDataBoxComments.comments,
+        {
+          _id: Math.random().toString(),
+          content: request.content,
+          createdAt: justNow,
+          postId: request.postId,
+          userId: {
+            _id: auth?.user?.id,
+            fullName: auth?.user?.fullName,
+            images: [
+              {
+                imageAbsolutePath:
+                  auth?.user?.profilePic || "/images/user/default-user.png",
+                fileName: "",
+                imageBase64String: "",
+                imageFile: null,
+                isNewUpload: false,
+              },
+            ],
+          },
+          ...(isRepply && {
+            parentId: {
+              _id: comment._id,
+              content: comment.content,
+              createdAt: comment.createdAt,
+            },
+          }),
+        },
+      ],
+    });
+    setRequest(initRequest);
+    handleComment({
+      ...request,
+      userId: auth.user.id,
+    });
+    setIsRepply(false);
+  };
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleSubmit();
+    }
+  };
+
   return (
     <div>
       {comment.parentId && (
@@ -70,6 +144,7 @@ const CommentItem = ({
                   content: e.target.value,
                 })
               }
+              onKeyDown={handleKeyDown}
               placeholder="What's repply?"
               className="ml-3 flex-1 bg-transparent px-4 py-2 text-sm focus:outline-none"
             />
@@ -77,11 +152,7 @@ const CommentItem = ({
               className={` ${request.content.length == 0 ? "cursor-not-allowed" : "hover:text-primary"}`}
               disabled={request.content.length == 0}
               onClick={() => {
-                setRequest(initRequest);
-                handleComment({
-                  ...request,
-                  userId: auth.user.id,
-                });
+                handleSubmit();
               }}
             >
               <LuSendHorizontal />

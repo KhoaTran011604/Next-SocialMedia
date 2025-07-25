@@ -9,12 +9,13 @@ import ActionButton from "./ActionButton";
 import {
   CommentPayload,
   CommentResponse,
+  fakeDataProps,
   imageProps,
   ItemPostProps,
   LikeResponse,
 } from "@/types/MainType";
 import BoxImages from "./BoxImages";
-import { useEffect, useState } from "react";
+import { KeyboardEvent, useEffect, useState } from "react";
 import VariantModal from "./VariantModal";
 import { GetAllCommentsByPost, GetAllLikesByPost } from "@/api/socialService";
 import CommentItem from "./CommentItem";
@@ -23,10 +24,10 @@ import { useAuth } from "@/context/auth";
 import Link from "next/link";
 import { formatMessageTime } from "@/lib/format-message-time";
 import { IoSendOutline } from "react-icons/io5";
-interface DataProps {
-  likes: LikeResponse[];
-  comments: CommentResponse[];
-}
+import { useModal } from "@/context/modal";
+import BoxComments from "./BoxComments";
+import BoxLikes from "./BoxLikes";
+import { toast } from "react-toastify";
 
 const PostCard = ({
   userId,
@@ -50,63 +51,39 @@ const PostCard = ({
     content: "",
   };
   const auth = useAuth();
-  const [open, setOpen] = useState<boolean>(false);
-  const [post, setPost] = useState<ItemPostProps>();
-  const [openModalLike, setOpenModalLike] = useState<boolean>(false);
+  const dataModal = useModal();
+  const { setOpen, setOpenModalLike, setContent, customStyle, setCustomStyle } =
+    dataModal;
+
   const [request, setRequest] = useState<CommentPayload>(initRequest);
   const [openCmtInput, setOpenCmtInput] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLikePost, setIsLikePost] = useState<boolean>(false);
-  const [data, setData] = useState<DataProps>({
-    likes: [],
-    comments: [],
+  const [fakeData, setFakeData] = useState<fakeDataProps>({
+    isLikePost: false,
+    fakeLikeNum: 0,
+    fakeCommentNum: 0,
   });
-  const LoadComments = () => {
-    if (isLoading) {
-      return;
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      handleComment(request);
+      toast.success("completed", {
+        position: "bottom-right",
+      });
+      setFakeData({
+        ...fakeData,
+        fakeCommentNum: fakeData.fakeCommentNum + 1,
+      });
+      setRequest(initRequest);
     }
-    setIsLoading(true);
-    GetAllCommentsByPost(_id)
-      .then((response) => {
-        if (response.success) {
-          setData({
-            ...data,
-            comments: response.data,
-          });
-        }
-      })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
   };
-  const LoadLikes = () => {
-    if (isLoading) {
-      return;
-    }
-    setIsLoading(true);
-    GetAllLikesByPost(_id)
-      .then((response) => {
-        if (response.success) {
-          setData({
-            ...data,
-            likes: response.data,
-          });
-        }
-      })
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false));
-  };
-  useEffect(() => {
-    if (open) {
-      LoadComments();
-    }
-  }, [open]);
-  useEffect(() => {
-    if (openModalLike) {
-      LoadLikes();
-    }
-  }, [openModalLike]);
   useEffect(() => {
     setIsLikePost(isLike);
+    setFakeData({
+      ...fakeData,
+      isLikePost: isLike,
+      fakeLikeNum: likeCount,
+      fakeCommentNum: commentCount,
+    });
   }, []);
   return (
     <div className="mb-4 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
@@ -152,17 +129,47 @@ const PostCard = ({
             className="cursor-pointer"
             onClick={() => {
               setOpenModalLike(true);
+
+              setCustomStyle({
+                ...customStyle,
+                title: "List Like",
+                size: "sm",
+                onConfirm: () => {},
+                hiddenButtomConfirm: true,
+                textButtomClose: "Close",
+                variant: "",
+                textButtomConfirm: "",
+              });
+              setContent(<BoxLikes _id={_id} />);
             }}
           >
-            {likeCount || ""} likes
+            {fakeData.fakeLikeNum || ""} likes
           </span>
           <span
             className="cursor-pointer"
             onClick={() => {
               setOpen(true);
+              setCustomStyle({
+                ...customStyle,
+                title: "List Comment",
+                size: "sm",
+                onConfirm: () => {},
+                hiddenButtomConfirm: true,
+                textButtomClose: "Close",
+                variant: "",
+                textButtomConfirm: "",
+              });
+              setContent(
+                <BoxComments
+                  _id={_id}
+                  handleComment={handleComment}
+                  fakeDataPostCard={fakeData}
+                  setFakeDataPostCard={setFakeData}
+                />,
+              );
             }}
           >
-            {commentCount || ""} comments
+            {fakeData.fakeCommentNum || ""} comments
           </span>
         </div>
 
@@ -171,10 +178,18 @@ const PostCard = ({
           <ActionButton
             onClick={() => {
               handleLike({ userId: auth.user.id, postId: _id, isLike: true });
-              setIsLikePost(!isLikePost);
+              //setIsLikePost(!isLikePost);
+              setFakeData({
+                ...fakeData,
+                isLikePost: !fakeData.isLikePost,
+                fakeLikeNum:
+                  fakeData.fakeLikeNum + (!fakeData.isLikePost ? 1 : -1),
+              });
             }}
             icon={
-              <HeartIcon className={`${isLikePost ? "text-red-500" : ""}`} />
+              <HeartIcon
+                className={`${fakeData.isLikePost ? "text-red-500" : ""}`}
+              />
             }
             label="Like"
           />
@@ -198,12 +213,13 @@ const PostCard = ({
             <input
               type="text"
               value={request.content}
-              onChange={(e) =>
+              onChange={(e) => {
                 setRequest({
                   ...request,
                   content: e.target.value,
-                })
-              }
+                });
+              }}
+              onKeyDown={handleKeyDown}
               placeholder="..."
               className="ml-3 flex-1 rounded-md bg-gray-100 px-4 py-2 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700"
             />
@@ -212,6 +228,13 @@ const PostCard = ({
               disabled={request.content.length === 0}
               onClick={() => {
                 handleComment(request);
+                toast.success("completed", {
+                  position: "bottom-right",
+                });
+                setFakeData({
+                  ...fakeData,
+                  fakeCommentNum: fakeData.fakeCommentNum + 1,
+                });
                 setRequest(initRequest);
               }}
             >
@@ -221,7 +244,7 @@ const PostCard = ({
         )}
       </div>
 
-      <VariantModal
+      {/* <VariantModal
         open={open}
         setOpen={setOpen}
         onClose={() => {
@@ -269,7 +292,7 @@ const PostCard = ({
             <div>No one likes this post. </div>
           )}
         </div>
-      </VariantModal>
+      </VariantModal> */}
     </div>
   );
 };

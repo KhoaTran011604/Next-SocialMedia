@@ -212,8 +212,6 @@ const PostDetailPage = () => {
       setIsEdit(true);
       LoadData();
     } else {
-      console.log(auth);
-
       setRequest({
         ...request,
         userId: auth?.user?.id,

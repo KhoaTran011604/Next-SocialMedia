@@ -1,4 +1,5 @@
 import { ChangeEventHandler } from "react";
+import { boolean } from "yup";
 
 export type Task = {
   _id: string;
@@ -92,11 +93,18 @@ export type LikePayload = {
   isLike: boolean;
 };
 
+export type UserInfo = {
+  _id: string;
+  fullName: string;
+  images: imageProps[];
+};
+
 export type CommentPayload = {
   userId: string;
   postId: string;
   content: string;
   parentId?: string;
+  createdAt?: string;
 };
 
 type TypeResponse = {
@@ -148,7 +156,7 @@ export interface CommentResponse {
   _id: string;
   createdAt: string;
   content: string;
-  parentId?: { _id: string; content: string; createdAt: Date };
+  parentId?: { _id: string; content: string; createdAt: string };
 }
 
 export type ChatMessage = {
@@ -166,4 +174,15 @@ export interface Message {
 export interface User {
   id: string;
   username: string;
+}
+
+export interface DataProps {
+  likes: LikeResponse[];
+  comments: CommentResponse[];
+}
+
+export interface fakeDataProps {
+  isLikePost: boolean;
+  fakeLikeNum: number;
+  fakeCommentNum: number;
 }

@@ -27,6 +27,7 @@ type SignUpPayload = {
 type LoginResponse = {
   success: boolean;
   data: any;
+  message?: string;
 };
 
 interface UpdateProfilePayload {
@@ -178,7 +179,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return { success: true, data: dataToken };
     } else {
       dataSocketIO.isLoggingIn = false;
-      return { success: false, data: {} };
+      return { success: false, data: {}, message: res.message };
     }
   };
   const register = async (data: SignUpPayload) => {

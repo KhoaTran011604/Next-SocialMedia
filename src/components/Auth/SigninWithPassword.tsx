@@ -34,9 +34,15 @@ export default function SigninWithPassword() {
     const res = await auth.login(data);
 
     if (!res.success) {
-      toast.error("Login Fail !!", {
-        position: "bottom-right",
-      });
+      if (res.message) {
+        toast.error(res.message, {
+          position: "bottom-right",
+        });
+      } else {
+        toast.error("Login Fail !!", {
+          position: "bottom-right",
+        });
+      }
     } else {
       return res;
     }
@@ -60,6 +66,9 @@ export default function SigninWithPassword() {
 
   const mutation = useMutation({
     mutationFn: async () => Login(),
+    onError: (err) => {
+      console.log("err", err);
+    },
     onSuccess: async (dataLogin) => {
       if (dataLogin && dataLogin.success) {
         const [todos, completed] = await Promise.all([

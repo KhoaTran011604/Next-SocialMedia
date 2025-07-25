@@ -32,7 +32,6 @@ const MessageInput = () => {
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
-  console.log(auth);
 
   const handleSendMessage = async () => {
     if (!text.trim() && !imagePreview) return;
@@ -92,8 +91,6 @@ const MessageInput = () => {
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
-                console.log("Enter");
-
                 e.preventDefault();
                 handleSendMessage();
               }

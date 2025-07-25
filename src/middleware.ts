@@ -1,7 +1,10 @@
 
 // middleware.ts
+
+
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+
 
 
 // Mảng các path cần áp dụng middleware
@@ -11,6 +14,8 @@ export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
     const token = request.cookies.get('token_info')?.value;
+
+
     if (pathname === '/') {
         return NextResponse.redirect(new URL('/social', request.url));
     }

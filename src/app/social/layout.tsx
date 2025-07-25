@@ -24,6 +24,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <Providers>
       {/* <Pointer /> */}
+
       <ModalProvider>
         <VariantModal_v2 />
 
