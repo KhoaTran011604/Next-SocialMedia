@@ -233,7 +233,9 @@ const ChangeInfo = ({ data, images, setImages }: ChangeInfoProps) => {
       </div>
       <div className="col-span-1 flex justify-end py-2 md:col-span-4">
         <div>
-          <Button type="submit">Save</Button>
+          <Button type="submit" loading={isBusy}>
+            Save
+          </Button>
         </div>
       </div>
     </HyperFormWrapper>

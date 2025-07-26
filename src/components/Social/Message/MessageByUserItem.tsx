@@ -14,8 +14,6 @@ const MessageByUserItem = ({ data }: { data: any }) => {
     setIsOpen(false);
   }
 
-  console.log("data-image", data);
-
   return (
     <div className={`flex w-full justify-end`}>
       <div className="max-[200px] flex items-start gap-2.5">

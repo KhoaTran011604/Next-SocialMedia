@@ -38,19 +38,25 @@ function Button({
   variant,
   size,
   asChild = false,
+  loading = false, // 👈 thêm ở đây
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    loading?: boolean; // 👈 thêm ở đây
   }) {
   const Comp = asChild ? Slot : "button";
-
   return (
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
-    />
+    >
+      {props.children}
+      {loading && (
+        <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-t-transparent dark:border-primary dark:border-t-transparent" />
+      )}
+    </Comp>
   );
 }
 
