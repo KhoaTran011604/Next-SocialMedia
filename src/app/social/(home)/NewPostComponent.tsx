@@ -6,12 +6,12 @@ import {
 import { useAuth } from "@/context/auth";
 import { PostStatus } from "@/enum/postEnum";
 import useStore from "@/zustand/store";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import HyperFormWrapper from "@/components/HyperFormWrapper";
 import { Button } from "@/components/ui/button";
 import { postSchema } from "@/shemas/postSchema";
-import { imageProps } from "@/types/MainType";
+import { imageProps, ItemPostProps } from "@/types/MainType";
 import { useParams } from "next/navigation";
 import { CloseIcon } from "@/assets/icons";
 import DropzoneComponentV2 from "@/components/common/DropZoneV2";
@@ -29,7 +29,13 @@ const dataInit = {
   likes: [],
   comments: [],
 };
-const NewPostComponent = () => {
+const NewPostComponent = ({
+  data,
+  setData,
+}: {
+  data: ItemPostProps[];
+  setData: Dispatch<SetStateAction<ItemPostProps[]>>;
+}) => {
   const params = useParams();
   const id = params?.id as string;
   const zustand = useStore();
@@ -44,23 +50,14 @@ const NewPostComponent = () => {
   const [deleteImages, setDeleteImages] = useState<imageProps[]>([]);
   const [isEdit, setIsEdit] = useState(false);
 
-  const handlePost = () => {
-    if (isLoading) {
+  const SaveData = async () => {
+    if (isBusy) {
       return;
     }
     if (request.content.length == 0) {
       toast.warning("Typing anything !!", {
         position: "bottom-right",
       });
-      return;
-    }
-    setIsLoading(true);
-
-    return;
-  };
-
-  const SaveData = async () => {
-    if (isBusy) {
       return;
     }
     setIsBusy(true);
@@ -87,6 +84,7 @@ const NewPostComponent = () => {
           toast.success("Create Success !", {
             position: "bottom-right",
           });
+          setData([response.data, ...data]);
           setOpen(false);
         } else {
           toast.error("Create Fail !", {
@@ -139,10 +137,10 @@ const NewPostComponent = () => {
       .then((response) => {
         if (response.success) {
           setHasDataChanged(true);
+
           toast.success("Update Success !", {
             position: "bottom-right",
           });
-          setOpen(false);
         } else {
           toast.error("Update Fail !", {
             position: "bottom-right",
@@ -267,7 +265,9 @@ const NewPostComponent = () => {
       </div>
       <div className="col-span-1 flex justify-end py-2 md:col-span-4">
         <div>
-          <Button type="submit">Post</Button>
+          <Button type="submit" loading={isBusy}>
+            Post
+          </Button>
         </div>
       </div>
     </HyperFormWrapper>

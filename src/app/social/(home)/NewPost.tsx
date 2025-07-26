@@ -7,12 +7,12 @@ import {
 import { useAuth } from "@/context/auth";
 import { PostStatus } from "@/enum/postEnum";
 import useStore from "@/zustand/store";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import HyperFormWrapper from "@/components/HyperFormWrapper";
 import { Button } from "@/components/ui/button";
 import { postSchema } from "@/shemas/postSchema";
-import { imageProps } from "@/types/MainType";
+import { imageProps, ItemPostProps } from "@/types/MainType";
 import { useParams } from "next/navigation";
 import { CloseIcon } from "@/assets/icons";
 import DropzoneComponentV2 from "@/components/common/DropZoneV2";
@@ -31,7 +31,13 @@ const dataInit = {
   likes: [],
   comments: [],
 };
-const NewPost = () => {
+const NewPost = ({
+  data,
+  setData,
+}: {
+  data: ItemPostProps[];
+  setData: Dispatch<SetStateAction<ItemPostProps[]>>;
+}) => {
   const params = useParams();
   const id = params?.id as string;
   const zustand = useStore();
@@ -46,23 +52,14 @@ const NewPost = () => {
   const [deleteImages, setDeleteImages] = useState<imageProps[]>([]);
   const [isEdit, setIsEdit] = useState(false);
 
-  const handlePost = () => {
-    if (isLoading) {
+  const SaveData = async () => {
+    if (isBusy) {
       return;
     }
     if (request.content.length == 0) {
       toast.warning("Typing anything !!", {
         position: "bottom-right",
       });
-      return;
-    }
-    setIsLoading(true);
-
-    return;
-  };
-
-  const SaveData = async () => {
-    if (isBusy) {
       return;
     }
     setIsBusy(true);
@@ -90,6 +87,7 @@ const NewPost = () => {
             position: "bottom-right",
           });
           setOpen(false);
+          setData([response.data, ...data]);
         } else {
           toast.error("Create Fail !", {
             position: "bottom-right",
@@ -237,7 +235,7 @@ const NewPost = () => {
                   textButtomConfirm: "",
                   size: "lg",
                 });
-                setContent(<NewPostComponent />);
+                setContent(<NewPostComponent data={data} setData={setData} />);
               }}
               type="button"
               className="flex items-center rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
@@ -315,10 +313,13 @@ const NewPost = () => {
 
           {/* Post Button */}
           <button
-            className="cursor-pointer rounded-lg bg-gray-200 px-4 py-1.5 text-sm font-medium text-gray-400"
-            onClick={handlePost}
+            className="flex cursor-pointer items-center gap-2 rounded-lg bg-gray-200 px-4 py-1.5 text-sm font-medium text-gray-400"
+            onClick={SaveData}
           >
-            Post
+            <div>Post</div>
+            {isBusy && (
+              <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-primary border-t-transparent dark:border-primary dark:border-t-transparent" />
+            )}
           </button>
         </div>
       </div>

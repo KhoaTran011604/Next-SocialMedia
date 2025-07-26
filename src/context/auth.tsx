@@ -290,31 +290,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     socket.on("newMessage", (newMessage) => {
       const isToMe = newMessage.receiverId === authUser.id;
-      if (isToMe) {
-        toast.info(
-          <div onClick={() => router.push("/social/message")}>
-            <span className="cursor-pointer">
-              {`📩 Tin nhắn mới từ ${newMessage.senderName || "ai đó"}`}
-            </span>
-          </div>,
-          {
-            position: "bottom-right",
-          },
-        );
-      }
-
       // if (isToMe) {
-      //   const updatedMessages = [...dataSocketIO.messages, newMessage];
-      //   dataSocketIO.messages = updatedMessages;
-      //   setMessages(updatedMessages);
-
-      //   // ✅ Nếu đang chat với người gửi, hiển thị luôn
-      //   if (isFromSelectedUser) {
-      //     // đã thêm ở trên rồi
-      //   } else {
-      //     // ✅ Nếu không phải người đang chat, có thể hiển thị toast
-      //     // toast.info(`Tin nhắn mới từ ${newMessage.senderName || "ai đó"}`);
-      //   }
+      //   toast.info(
+      //     <div onClick={() => router.push("/social/message")}>
+      //       <span className="cursor-pointer">
+      //         {`📩 Tin nhắn mới từ ${newMessage.senderName || "ai đó"}`}
+      //       </span>
+      //     </div>,
+      //     {
+      //       position: "bottom-right",
+      //     },
+      //   );
       // }
     });
   };
