@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
 import { useAuth } from "@/context/auth";
+import { useChatStore } from "@/zustand/useChatStore";
+import { useAuthStore } from "@/zustand/useAuthStore";
 
 const UserOnlineSidebar = () => {
-  const auth = useAuth();
-  const { getUsers, users, selectedUser, isUsersLoading } = auth.dataSocketIO;
-  const { setSelectedUser } = auth;
-
-  const onlineUsers = auth.dataSocketIO.onlineUsers;
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } =
+    useChatStore();
+  const dataAuthStore = useAuthStore();
+  const { onlineUsers } = dataAuthStore;
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
   useEffect(() => {
@@ -53,6 +54,7 @@ const UserOnlineSidebar = () => {
             key={user._id}
             onClick={() => {
               setSelectedUser(user);
+              dataAuthStore.setSelectedUser({ ...user, id: user._id });
             }}
             className={`hover:bg-base-300 flex w-full items-center gap-3 p-3 transition-colors ${selectedUser?._id === user._id ? "bg-base-300 ring-base-300 ring-1" : ""} `}
           >

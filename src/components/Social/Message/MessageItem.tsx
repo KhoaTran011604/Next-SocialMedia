@@ -28,12 +28,12 @@ const MessageItem = ({ data }: { data: any }) => {
               {formatMessageTime(data?.createdAt) || "12:00"}
             </span>
           </div>
-          <p className="whitespace-normal break-words py-2.5 text-sm font-normal text-gray-900 dark:text-white">
-            {data?.text}
-          </p>
           {data.image && (
             <img src={data.image} alt={data.image} srcSet={data.image} />
           )}
+          <p className="whitespace-normal break-words py-2.5 text-sm font-normal text-gray-900 dark:text-white">
+            {data?.text}
+          </p>
         </div>
         <div className="relative inline-block">
           <button

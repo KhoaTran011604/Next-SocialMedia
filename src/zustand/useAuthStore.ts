@@ -6,13 +6,16 @@ import { AuthVertify, SignUp } from "@/api/authService";
 import { UpdateUser } from "@/api/userService";
 import { decryptData } from "@/lib/crypto";
 import Cookies from "js-cookie";
+import { useChatStore } from "./useChatStore";
+
 
 // Cấu hình URL server
-const BASE_URL = process.env.MODE === "development" ? "http://localhost:5000" : "/";
+const LOCAL_SOCKET_URL = "http://localhost:5000";
+const PUBLIC_SOCKET_URL = "https://server-next-socialmedia.onrender.com";
 
 // Kiểu User cơ bản
 interface User {
-  _id: string;
+  id: string;
   fullName: string;
   email: string;
   profilePic?: string;
@@ -37,6 +40,7 @@ interface UpdateProfilePayload {
 // Kiểu store
 interface AuthState {
   authUser: User | null;
+  selectedUser: any;
   isSigningUp: boolean;
   isLoggingIn: boolean;
   isUpdatingProfile: boolean;
@@ -44,13 +48,14 @@ interface AuthState {
   onlineUsers: string[];
   socket: Socket | null;
 
-  checkAuth: () => Promise<void>;
-  signup: (data: AuthCredentials) => Promise<void>;
-  login: (data: AuthCredentials) => Promise<void>;
+  checkAuth: (dataAuthUser: any) => Promise<void>;
+  signup: (data: any) => Promise<void>;
+  login: (data: any) => Promise<void>;
   logout: () => Promise<void>;
-  updateProfile: (data: UpdateProfilePayload) => Promise<void>;
+  updateProfile: (data: any) => Promise<void>;
   connectSocket: () => void;
   disconnectSocket: () => void;
+  setSelectedUser: (user: User) => void;
 }
 const getTokensFromCookies = () => {
   const encryptedToken = Cookies.get("token_info");
@@ -70,6 +75,7 @@ const getTokensFromCookies = () => {
 // Store Zustand
 export const useAuthStore = create<AuthState>((set, get) => ({
   authUser: null,
+  selectedUser: null,
   isSigningUp: false,
   isLoggingIn: false,
   isUpdatingProfile: false,
@@ -77,15 +83,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   onlineUsers: [],
   socket: null,
 
-  checkAuth: async () => {
+  checkAuth: async (dataAuthUser: any) => {
     try {
-      var token_info = getTokensFromCookies();
-      if (!token_info) {
-        //router.replace("/auth/sign-in");
-        return;
-      }
-      const res = await AuthVertify({});
-      set({ authUser: res.data });
+      // var token_info = getTokensFromCookies();
+      // if (!token_info) {
+      //   //router.replace("/auth/sign-in");
+      //   return;
+      // }
+      // const res = await AuthVertify({});
+      set({ authUser: dataAuthUser });
       get().connectSocket();
     } catch (error: any) {
       console.log("Error in checkAuth:", error);
@@ -95,11 +101,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  signup: async (data: AuthCredentials) => {
+  signup: async (dataAuthUser: any) => {
     set({ isSigningUp: true });
     try {
-      const res = await SignUp(data);
-      set({ authUser: res.data });
+
+      set({ authUser: dataAuthUser });
       toast.success("Account created successfully");
       get().connectSocket();
     } catch (error: any) {
@@ -109,11 +115,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  login: async (data: AuthCredentials) => {
+  login: async (dataAuthUser: any) => {
     set({ isLoggingIn: true });
     try {
-      const res = await SignUp(data)
-      set({ authUser: res.data });
+
+      set({ authUser: dataAuthUser });
       toast.success("Logged in successfully");
       get().connectSocket();
     } catch (error: any) {
@@ -134,11 +140,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  updateProfile: async (data: UpdateProfilePayload) => {
+  updateProfile: async (dataAuthUser: any) => {
     set({ isUpdatingProfile: true });
     try {
-      const res = await UpdateUser("1223", data);
-      set({ authUser: res.data });
+
+      set({ authUser: dataAuthUser });
       toast.success("Profile updated successfully");
     } catch (error: any) {
       console.log("error in update profile:", error);
@@ -150,19 +156,36 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   connectSocket: () => {
     const { authUser } = get();
+
+
     if (!authUser || get().socket?.connected) return;
 
-    const socket: Socket = io(BASE_URL, {
+    const socket: Socket = io(PUBLIC_SOCKET_URL, {
       query: {
-        userId: authUser._id,
+        userId: authUser.id,
       },
     });
+    const socketAll: Socket = io(PUBLIC_SOCKET_URL);
 
     socket.connect();
     set({ socket });
 
     socket.on("getOnlineUsers", (userIds: string[]) => {
+
+
       set({ onlineUsers: userIds });
+    });
+
+    socketAll.on("newMessage", (newMessage) => {
+
+
+
+      const isToMe = newMessage.receiverId === authUser.id && newMessage.senderId !== get().selectedUser?.id
+      if (isToMe) {
+        toast.info(`📩 Tin nhắn mới từ ${newMessage.senderName || "ai đó"}`, {
+          position: "bottom-right"
+        })
+      }
     });
   },
 
@@ -171,4 +194,5 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       get().socket?.disconnect();
     }
   },
+  setSelectedUser: (user: User) => set({ selectedUser: user }),
 }));

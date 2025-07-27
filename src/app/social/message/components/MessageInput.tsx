@@ -6,11 +6,14 @@ import { useAuth } from "@/context/auth";
 import { SendMessage, SendMessageWithImage } from "@/api/socialService";
 import { imageProps } from "@/types/MainType";
 import { IoMdClose } from "react-icons/io";
+import { useChatStore } from "@/zustand/useChatStore";
+import { useAuthStore } from "@/zustand/useAuthStore";
 
 const MessageInput = () => {
-  const auth = useAuth();
+  const authZustand = useAuthStore();
+  const chatStore = useChatStore();
   const [isBusy, setIsBusy] = useState<boolean>(false);
-  const { dataSocketIO, selectedUser, messages, setMessages } = auth;
+  const { selectedUser, messages, setMessages } = chatStore;
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -59,19 +62,21 @@ const MessageInput = () => {
         image: imagePreview,
       };
     }
-
+    if (!selectedUser) {
+      return;
+    }
     const res =
       images.length == 0
         ? await SendMessage(selectedUser._id, request_v2)
         : await SendMessageWithImage(selectedUser._id, request_v2);
-    dataSocketIO.messages = [...dataSocketIO.messages, res.data];
+    //dataSocketIO.messages = [...dataSocketIO.messages, res.data];
     if (res.success) {
       const justNow = new Date().toISOString();
       const fakeMessage = {
         _id: Math.random(),
         createdAt: justNow,
         receiverId: selectedUser._id,
-        senderId: auth.user.id,
+        senderId: authZustand.authUser?.id,
         text: text.trim(),
         image: res.data.image,
         updatedAt: justNow,

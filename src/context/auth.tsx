@@ -15,6 +15,7 @@ import {
 import { UserTokenPayload } from "@/types/MainType";
 import { BaseResponse } from "@/api/BaseResponse";
 import { toast } from "react-toastify";
+import { useAuthStore } from "@/zustand/useAuthStore";
 
 type AuthPayload = {
   email: string;
@@ -132,6 +133,8 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
+  const authZustand = useAuthStore();
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<UserTokenPayload | null>(null);
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
@@ -165,9 +168,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           email: dataToken.email,
           image: "",
         };
-        dataSocketIO.authUser = newAuthUser;
-        dataSocketIO.isLoggingIn = true;
-        dataSocketIO.connectSocket();
+        authZustand.login(newAuthUser);
+        // dataSocketIO.authUser = newAuthUser;
+        // dataSocketIO.isLoggingIn = true;
+        // dataSocketIO.connectSocket();
       }
       const { accessToken, refreshToken } = res.data;
       const encrypted = encryptData({
@@ -221,6 +225,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setIsAuthenticated(true);
 
       setUser(response.data);
+      authZustand.checkAuth(response.data);
       //SocketIO
       dataSocketIO.authUser = response.data;
       dataSocketIO.connectSocket();
@@ -246,6 +251,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             email: "demo@gmail.com",
             image: "",
           };
+          authZustand.checkAuth(newAuthUser);
           dataSocketIO.authUser = newAuthUser;
           dataSocketIO.connectSocket();
         }

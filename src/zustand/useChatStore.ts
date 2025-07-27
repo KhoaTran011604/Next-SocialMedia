@@ -17,11 +17,19 @@ export interface User {
 
 // Kiểu Message
 export interface Message {
-  _id: string;
-  senderId: string;
-  receiverId: string;
-  content: string;
+  // _id: string;
+  // senderId: string;
+  // senderName: string;
+  // receiverId: string;
+  // content: string;
+  // createdAt: string;
+  _id: number;
   createdAt: string;
+  receiverId: string;
+  senderId: any;
+  text: string;
+  image: any;
+  updatedAt: string;
   // Có thể thêm updatedAt, isRead,...
 }
 
@@ -36,16 +44,17 @@ export interface MessageInput {
 interface ChatState {
   messages: Message[];
   users: User[];
-  selectedUser: User | null;
+  selectedUser: any | null;
   isUsersLoading: boolean;
   isMessagesLoading: boolean;
 
   getUsers: () => Promise<void>;
   getMessages: (userId: string) => Promise<void>;
+  setMessages: (newMessList: Message[]) => void
   sendMessage: (messageData: MessageInput) => Promise<void>;
   subscribeToMessages: () => void;
   unsubscribeFromMessages: () => void;
-  setSelectedUser: (user: User) => void;
+  setSelectedUser: (user: any) => void;
 }
 
 // ========== Zustand store ==========
@@ -71,13 +80,19 @@ export const useChatStore = create<ChatState>((set, get) => ({
   getMessages: async (userId: string) => {
     set({ isMessagesLoading: true });
     try {
+
       const res = await GetMessages(userId);
+
+
       set({ messages: res.data });
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to load messages");
     } finally {
       set({ isMessagesLoading: false });
     }
+  },
+  setMessages: (newMessList: Message[]) => {
+    set({ messages: newMessList })
   },
 
   sendMessage: async (messageData: MessageInput) => {
@@ -105,6 +120,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
     if (!socket) return;
 
     socket.on("newMessage", (newMessage: Message) => {
+
+
+
       const isFromSelectedUser = newMessage.senderId === selectedUser._id;
       if (!isFromSelectedUser) return;
 

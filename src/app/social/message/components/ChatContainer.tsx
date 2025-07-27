@@ -9,30 +9,29 @@ import { AuthProvider, useAuth } from "../../../../context/auth";
 import { GetMessages } from "@/api/socialService";
 import MessageByUserItem from "@/components/Social/Message/MessageByUserItem";
 import MessageItem from "@/components/Social/Message/MessageItem";
+import { useAuthStore } from "@/zustand/useAuthStore";
+import { useChatStore } from "@/zustand/useChatStore";
+import { log } from "console";
 
 const ChatContainer = () => {
-  const auth = useAuth();
-  const { dataSocketIO } = auth;
+  const dataChatStore = useChatStore();
   const {
-    authUser,
-
+    messages,
     getMessages,
     isMessagesLoading,
-    //selectedUser,
+    selectedUser,
     subscribeToMessages,
     unsubscribeFromMessages,
-  } = auth.dataSocketIO;
-
-  const { selectedUser, messages } = auth;
-
+  } = dataChatStore;
+  const { authUser } = useAuthStore();
   const messageEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (selectedUser) {
       getMessages(selectedUser._id);
-      var fakeMessages = [...messages];
-      subscribeToMessages(selectedUser, fakeMessages);
     }
+
+    subscribeToMessages();
 
     return () => unsubscribeFromMessages();
   }, [
@@ -43,7 +42,7 @@ const ChatContainer = () => {
   ]);
 
   useEffect(() => {
-    if (messageEndRef.current && messages) {
+    if (messageEndRef.current && messages?.length) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);

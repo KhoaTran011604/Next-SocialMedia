@@ -1,10 +1,12 @@
 import { useAuth } from "@/context/auth";
+import { useAuthStore } from "@/zustand/useAuthStore";
+import { useChatStore } from "@/zustand/useChatStore";
 import { X } from "lucide-react";
 
 const ChatHeader = () => {
-  const auth = useAuth();
-  const { onlineUsers } = auth.dataSocketIO;
-  const { selectedUser, setSelectedUser } = auth;
+  const { selectedUser, setSelectedUser } = useChatStore();
+  const dataAuthStore = useAuthStore();
+  const { onlineUsers } = dataAuthStore;
 
   return (
     <div className="border-base-300 border-b p-2.5">
@@ -15,7 +17,7 @@ const ChatHeader = () => {
             <div className="relative size-10 rounded-full">
               <img
                 src={
-                  selectedUser.images.length > 0
+                  selectedUser && selectedUser.images.length > 0
                     ? selectedUser.images[0].imageAbsolutePath
                     : "/images/user/default-user.png"
                 }
