@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import Link from "next/link";
 import { useSidebarSocialContext } from "./sidebar-context";
+import { useDrawer } from "@/context/drawer";
 
 const menuItemBaseStyles = cva(
   "rounded-lg px-3.5 font-medium text-dark-4 transition-all duration-200 dark:text-dark-6",
@@ -27,13 +28,13 @@ export function MenuItem(
   } & ({ as?: "button"; onClick: () => void } | { as: "link"; href: string }),
 ) {
   const { toggleSidebar, isMobile } = useSidebarSocialContext();
-
+  const { closeDrawer } = useDrawer();
   if (props.as === "link") {
     return (
       <Link
         href={props.href}
         // Close sidebar on clicking link if it's mobile
-        onClick={() => isMobile && toggleSidebar()}
+        onClick={() => isMobile && closeDrawer()}
         className={cn(
           menuItemBaseStyles({
             isActive: props.isActive,

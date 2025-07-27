@@ -8,11 +8,9 @@ export const NAV_DATA = [
         title: "Home",
         icon: Icons.HomeIcon,
         oAuth: false,
+        url: "/social",
         items: [
-          {
-            title: "Social Media",
-            url: "/social",
-          },
+
 
         ],
       },

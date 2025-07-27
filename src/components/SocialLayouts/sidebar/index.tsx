@@ -48,23 +48,12 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile Overlay */}
-      {isMobile && isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 transition-opacity duration-300"
-          onClick={() => setIsOpen(false)}
-          aria-hidden="true"
-        />
-      )}
-
       <aside
         style={{ zIndex: 0 }}
         className={cn(
           "max-w-[290px] overflow-hidden bg-transparent p-0 transition-[width] duration-200 ease-linear dark:text-white/90 lg:p-4",
-          isMobile
-            ? "fixed bottom-0 top-0 z-[999999]"
-            : "sticky top-0 h-screen",
-          isOpen ? "w-full" : "w-0",
+          isMobile ? "hidden" : "sticky top-0 h-screen",
+          "w-full",
         )}
         aria-label="Main navigation"
         aria-hidden={!isOpen}

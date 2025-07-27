@@ -11,6 +11,7 @@ import RightPanel from "@/components/Social/RightPanel/RightPanel";
 import Pointer from "@/components/Social/Pointer";
 import { ModalProvider } from "@/context/modal";
 import { VariantModal_v2 } from "@/components/Social/VariantModal_v2";
+import { DrawerProvider } from "@/context/drawer";
 
 export const metadata: Metadata = {
   title: {
@@ -27,10 +28,11 @@ export default function RootLayout({ children }: PropsWithChildren) {
 
       <ModalProvider>
         <VariantModal_v2 />
+        <DrawerProvider>
+          <Header />
 
-        <Header />
-
-        <div className="z-0 flex min-h-screen">{children}</div>
+          <div className="z-0 flex min-h-screen">{children}</div>
+        </DrawerProvider>
       </ModalProvider>
     </Providers>
   );

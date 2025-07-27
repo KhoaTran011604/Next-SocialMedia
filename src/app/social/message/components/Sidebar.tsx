@@ -24,8 +24,8 @@ const UserOnlineSidebar = () => {
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside className="border-base-300 flex h-full w-20 flex-col border-r transition-all duration-200 lg:w-72">
-      <div className="border-base-300 w-full border-b p-5">
+    <aside className="flex h-full w-20 flex-col transition-all duration-200 lg:w-72">
+      <div className="w-full border-b border-gray-200 p-5 dark:border-gray-800">
         <div className="flex items-center gap-2">
           <Users className="size-6" />
           <span className="hidden font-medium lg:block">Contacts</span>

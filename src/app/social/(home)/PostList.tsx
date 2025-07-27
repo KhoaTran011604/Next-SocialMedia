@@ -12,6 +12,7 @@ import useStore from "@/zustand/store";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import NewPost from "./NewPost";
+import { SkeletonPostCard } from "@/components/Social/SkeletonPostCard ";
 
 const filterInit = {
   keySearch: "",
@@ -79,21 +80,25 @@ const PostList = () => {
     scrollTo(0, 0);
     LoadData();
   }, []);
-  console.log(data);
 
   return (
     <div>
       <NewPost data={data} setData={setData} />
+
       <div className="space-y-4">
-        {data.map((item, idx) => (
-          <PostCard
-            key={idx}
-            {...item}
-            handleComment={handleComment}
-            handleDeleteComment={handleDeleteComment}
-            handleLike={handleLike}
-          />
-        ))}
+        {isLoading ? (
+          <SkeletonPostCard />
+        ) : (
+          data.map((item, idx) => (
+            <PostCard
+              key={idx}
+              {...item}
+              handleComment={handleComment}
+              handleDeleteComment={handleDeleteComment}
+              handleLike={handleLike}
+            />
+          ))
+        )}
       </div>
     </div>
   );
