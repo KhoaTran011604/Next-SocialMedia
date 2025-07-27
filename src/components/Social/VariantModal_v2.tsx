@@ -28,7 +28,7 @@ export const VariantModal_v2 = () => {
   const sizes: any = {
     sm: "max-w-[600px]",
     medium: "max-w-[900px]",
-    lg: "max-w-[70vw]",
+    lg: "w-full md:max-w-[70vw]",
   };
 
   return (

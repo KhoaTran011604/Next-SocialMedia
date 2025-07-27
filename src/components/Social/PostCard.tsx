@@ -91,13 +91,16 @@ const PostCard = ({
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
-            {userId.images.length > 0 && (
-              <img
-                src={userId.images[0].imageAbsolutePath}
-                alt={userId.fullName}
-                className="h-10 w-10 rounded-full border border-gray-200 object-cover"
-              />
-            )}
+            <img
+              src={
+                userId.images.length > 0
+                  ? userId.images[0].imageAbsolutePath
+                  : "/images/user/default-user.png"
+              }
+              alt={userId.fullName}
+              className="h-10 w-10 rounded-full border border-gray-200 object-cover"
+            />
+
             <Link href={`/social/profile/${userId._id}`}>
               <div className="text-sm font-semibold text-gray-900 dark:text-white/90">
                 {userId.fullName}
@@ -206,7 +209,11 @@ const PostCard = ({
         {openCmtInput && (
           <div className="mt-2 flex justify-between gap-4 border-t-2 border-gray-100 pt-2 dark:border-gray-800">
             <img
-              src="https://images.pexels.com/photos/1382731/pexels-photo-1382731.jpeg?auto=compress&cs=tinysrgb&w=150"
+              src={
+                userId.images.length > 0
+                  ? userId.images[0].imageAbsolutePath
+                  : "/images/user/default-user.png"
+              }
               alt="Current User"
               className="h-10 w-10 rounded-full border border-gray-200 object-cover"
             />

@@ -142,6 +142,13 @@ const MessageInput = () => {
       )}
 
       <div className="flex items-center gap-2">
+        <button
+          type="button"
+          className={`btn btn-circle hidden sm:flex ${images.length > 0 ? "text-emerald-500" : "text-zinc-400"} hover:text-primary`}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <Image size={22} />
+        </button>
         <div className="flex flex-1 gap-2">
           <input
             type="text"
@@ -164,13 +171,7 @@ const MessageInput = () => {
             onChange={(e: any) => handleImageUpload(e.target.files[0])}
           />
         </div>
-        <button
-          type="button"
-          className={`btn btn-circle hidden sm:flex ${images.length > 0 ? "text-emerald-500" : "text-zinc-400"} hover:text-primary`}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          <Image size={20} />
-        </button>
+
         {isBusy ? (
           <div role="status">
             <svg

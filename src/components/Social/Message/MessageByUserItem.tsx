@@ -20,8 +20,8 @@ const MessageByUserItem = ({ data }: { data: any }) => {
         <img
           className="h-8 w-8 rounded-full"
           src={
-            auth?.user.profilePic?.length > 0
-              ? auth?.user.profilePic
+            auth?.user?.profilePic?.length > 0
+              ? auth?.user?.profilePic
               : "/images/user/default-user.png"
           }
           alt={`image of ${auth?.user.fullName}`}

@@ -123,6 +123,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
 
 
+
       const isFromSelectedUser = newMessage.senderId === selectedUser._id;
       if (!isFromSelectedUser) return;
 
