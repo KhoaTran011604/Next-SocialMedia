@@ -110,7 +110,11 @@ const CommentItem = ({
       )}
       <div className="mt-2 flex justify-between gap-4">
         <img
-          src="https://images.pexels.com/photos/1382731/pexels-photo-1382731.jpeg?auto=compress&cs=tinysrgb&w=150"
+          src={
+            comment?.userId?.images.length > 0
+              ? comment?.userId?.images[0].imageAbsolutePath
+              : "/images/user/default-user.png"
+          }
           alt="Current User"
           className="h-10 w-10 rounded-full border border-gray-200 object-cover"
         />

@@ -45,12 +45,13 @@ const PostCard = ({
   handleDeleteComment,
   isLike,
 }: ItemPostProps) => {
+  const auth = useAuth();
   const initRequest = {
-    userId: userId._id,
+    userId: "",
     postId: _id,
     content: "",
   };
-  const auth = useAuth();
+
   const dataModal = useModal();
   const { setOpen, setOpenModalLike, setContent, customStyle, setCustomStyle } =
     dataModal;
@@ -63,6 +64,9 @@ const PostCard = ({
     fakeLikeNum: 0,
     fakeCommentNum: 0,
   });
+  console.log("req", request);
+  console.log(auth);
+
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleComment(request);
@@ -84,6 +88,12 @@ const PostCard = ({
       fakeLikeNum: likeCount,
       fakeCommentNum: commentCount,
     });
+    if (auth) {
+      setRequest({
+        ...request,
+        userId: auth.user.id,
+      });
+    }
   }, []);
   return (
     <div className="mb-4 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
@@ -210,8 +220,8 @@ const PostCard = ({
           <div className="mt-2 flex justify-between gap-4 border-t-2 border-gray-100 pt-2 dark:border-gray-800">
             <img
               src={
-                userId.images.length > 0
-                  ? userId.images[0].imageAbsolutePath
+                auth?.user?.profilePic.length > 0
+                  ? auth?.user?.profilePic
                   : "/images/user/default-user.png"
               }
               alt="Current User"

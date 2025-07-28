@@ -198,8 +198,8 @@ const NewPost = ({
       <div className="mb-3 flex items-center">
         <img
           src={
-            data[0]?.userId?.images.length > 0
-              ? data[0]?.userId.images[0].imageAbsolutePath
+            auth?.user?.profilePic.length > 0
+              ? auth?.user?.profilePic
               : "/images/user/default-user.png"
           }
           alt="Current User"
