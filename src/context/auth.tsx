@@ -76,7 +76,7 @@ interface DataSocketIOProps {
   //#endregion
 }
 
-type AuthContextType = {
+export type AuthContextType = {
   isAuthenticated: boolean;
   user: any;
   login: (data: AuthPayload) => Promise<LoginResponse>;

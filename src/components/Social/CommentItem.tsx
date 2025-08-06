@@ -29,6 +29,7 @@ const CommentItem = ({
   setFakeDataBoxComments: Dispatch<SetStateAction<DataProps>>;
 }) => {
   const auth = useAuth();
+
   const justNow = new Date().toISOString();
   const initRequest = {
     userId: "",
@@ -54,7 +55,6 @@ const CommentItem = ({
     setFakeDataBoxComments({
       ...fakeDataBoxComments,
       comments: [
-        ...fakeDataBoxComments.comments,
         {
           _id: Math.random().toString(),
           content: request.content,
@@ -82,6 +82,7 @@ const CommentItem = ({
             },
           }),
         },
+        ...fakeDataBoxComments.comments,
       ],
     });
     setRequest(initRequest);
