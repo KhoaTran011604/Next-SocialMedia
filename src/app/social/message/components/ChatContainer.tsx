@@ -22,6 +22,8 @@ const ChatContainer = () => {
     selectedUser,
     subscribeToMessages,
     unsubscribeFromMessages,
+    followNotifyToMe,
+    unFollowNotifyToMe,
   } = dataChatStore;
   const { authUser } = useAuthStore();
   const messageEndRef = useRef<HTMLDivElement | null>(null);
@@ -32,13 +34,19 @@ const ChatContainer = () => {
     }
 
     subscribeToMessages();
+    followNotifyToMe();
 
-    return () => unsubscribeFromMessages();
+    return () => {
+      unsubscribeFromMessages();
+      unFollowNotifyToMe();
+    };
   }, [
     selectedUser?._id,
     getMessages,
     subscribeToMessages,
     unsubscribeFromMessages,
+    followNotifyToMe,
+    unFollowNotifyToMe,
   ]);
 
   useEffect(() => {

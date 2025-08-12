@@ -15,6 +15,7 @@ import NewPost from "./NewPost";
 import { SkeletonPostCard } from "@/components/Social/SkeletonPostCard ";
 import { Button } from "@/components/ui/button";
 import { debounce } from "lodash";
+import { useChatStore } from "@/zustand/useChatStore";
 
 const filterInit: Filter = {
   keySearch: "",
@@ -126,6 +127,13 @@ const PostList = () => {
       </div>
     );
   };
+  const dataChatStore = useChatStore();
+  const { followNotifyToMe, unFollowNotifyToMe } = dataChatStore;
+  useEffect(() => {
+    followNotifyToMe();
+
+    return () => unFollowNotifyToMe();
+  }, [followNotifyToMe, unFollowNotifyToMe]);
 
   return (
     <div>

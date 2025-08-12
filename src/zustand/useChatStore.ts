@@ -54,6 +54,8 @@ interface ChatState {
   sendMessage: (messageData: MessageInput) => Promise<void>;
   subscribeToMessages: () => void;
   unsubscribeFromMessages: () => void;
+  followNotifyToMe: () => void;
+  unFollowNotifyToMe: () => void;
   setSelectedUser: (user: any) => void;
 }
 
@@ -132,8 +134,35 @@ export const useChatStore = create<ChatState>((set, get) => ({
       }));
     });
   },
-
   unsubscribeFromMessages: () => {
+    const socket: Socket | null = useAuthStore.getState().socket;
+    if (!socket) return;
+
+    socket.off("newMessage");
+  },
+  followNotifyToMe: () => {
+    const { selectedUser } = get();
+    const socket = useAuthStore.getState().socket;
+    console.log("socket=>>>>>>>>>>>>>", socket);
+
+    if (!socket) return;
+    console.log("socket runing ......");
+
+    socket.on("newMessage", (newMessage: Message) => {
+      const condition = !selectedUser || (selectedUser._id != newMessage.senderId)
+      if (condition) {
+        console.log("newMessage====>");
+        console.log(newMessage);
+      }
+
+
+
+
+
+
+    });
+  },
+  unFollowNotifyToMe: () => {
     const socket: Socket | null = useAuthStore.getState().socket;
     if (!socket) return;
 
