@@ -143,16 +143,16 @@ export const useChatStore = create<ChatState>((set, get) => ({
   followNotifyToMe: () => {
     const { selectedUser } = get();
     const socket = useAuthStore.getState().socket;
-    console.log("socket=>>>>>>>>>>>>>", socket);
 
     if (!socket) return;
-    console.log("socket runing ......");
 
-    socket.on("newMessage", (newMessage: Message) => {
+    socket.on("newMessage", (newMessage) => {
       const condition = !selectedUser || (selectedUser._id != newMessage.senderId)
       if (condition) {
-        console.log("newMessage====>");
-        console.log(newMessage);
+        toast.info(`📩 Tin nhắn mới từ ${newMessage?.senderName || "ai đó"}`, {
+          position: "bottom-right"
+        })
+
       }
 
 

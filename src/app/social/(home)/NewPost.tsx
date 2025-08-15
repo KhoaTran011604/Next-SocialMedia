@@ -20,6 +20,7 @@ import HD_TextArea from "@/components/common/HD_TextArea";
 import VariantModal from "@/components/Social/VariantModal";
 import { useModal } from "@/context/modal";
 import NewPostComponent from "./NewPostComponent";
+import Link from "next/link";
 
 const TYPE_OF_DATA_IMG_RETURN = "file";
 const dataInit = {
@@ -277,9 +278,9 @@ const NewPost = ({
             </button>
 
             {/* Feeling */}
-            <button
-              type="button"
+            <Link
               className="flex items-center rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
+              href={"social/edit-post/add"}
             >
               <svg
                 className="mr-1.5 h-5 w-5"
@@ -294,7 +295,7 @@ const NewPost = ({
                 <line x1="15" y1="9" x2="15.01" y2="9" />
               </svg>
               <span className="hidden sm:inline">Feeling</span>
-            </button>
+            </Link>
 
             {/* Location */}
             <button

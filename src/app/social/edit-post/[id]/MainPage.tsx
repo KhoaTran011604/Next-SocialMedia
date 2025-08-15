@@ -1,75 +1,77 @@
 "use client";
-import { GetAllCategoryFK } from "@/api/categoryService";
+import { useEffect, useState } from "react";
 import {
+  GetAllPostByUserId,
   SavePost_UploadMutli,
   SeachPost,
   UpdatePost_UploadMutli,
 } from "@/api/postService";
-import { CloseIcon } from "@/assets/icons";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import DropzoneComponentV2 from "@/components/common/DropZoneV2";
-import HD_Input from "@/components/common/HD_Input";
-import HD_TextArea from "@/components/common/HD_TextArea";
-import HyperFormWrapper from "@/components/HyperFormWrapper";
-import LottieComponent from "@/components/lotties/lottie";
-import Select from "@/components/Select";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/auth";
-import { PostStatus } from "@/enum/postEnum";
-import { formatMessageTime } from "@/lib/format-message-time";
-//import { PostStatus } from "@/enum/postEnum";
-import { postSchema } from "@/shemas/postSchema";
-
-import { imageProps, LikeResponse } from "@/types/MainType";
 import useStore from "@/zustand/store";
-import { MoreHorizontalIcon } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Filter, imageProps, ItemPostProps } from "@/types/MainType";
 import { toast } from "react-toastify";
+import { PostStatus } from "@/enum/postEnum";
+import { PostDetailProps } from "@/app/admin/posts/[id]/page";
+import { formatMessageTime } from "@/lib/format-message-time";
+import HyperFormWrapper from "@/components/HyperFormWrapper";
+import { postSchema } from "@/shemas/postSchema";
+import Select from "@/components/Select";
+import HD_TextArea from "@/components/common/HD_TextArea";
+import DropzoneComponentV2 from "@/components/common/DropZoneV2";
+import { CloseIcon } from "@/assets/icons";
+import { Button } from "@/components/ui/button";
+import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
+import BoxImages from "@/components/Social/BoxImages";
+import { useAuth } from "@/context/auth";
 
+const filterInit = {
+  keySearch: "",
+  sort: {},
+  page: 1,
+  pageSize: 10,
+  sessionCode: Math.random().toString(),
+  userId: "",
+};
 const TYPE_OF_DATA_IMG_RETURN = "file";
-export interface PostDetailProps {
-  userId: string;
-  content: string;
-  status: string;
-  hashTags: any;
-  images: imageProps[];
-  likes: any;
-  comments: any;
-  userName: string;
-  userImages: any;
-  createdAt: string;
-}
-const PostDetailPage = () => {
-  const params = useParams();
-  const id = params?.id as string;
+const dataInit = {
+  userId: "",
+  content: "",
+  status: PostStatus.disApprove,
+  hashTags: [],
+  images: [],
+  likes: [],
+  comments: [],
+  userName: "",
+  userImages: [],
+  createdAt: new Date().toISOString(),
+};
+const MainPage = () => {
   const auth = useAuth();
-
-  const dataInit = {
-    userId: "",
-    content: "",
-    status: PostStatus.disApprove,
-    hashTags: [],
-    images: [],
-    likes: [],
-    comments: [],
-    userName: "",
-    userImages: [],
-    createdAt: new Date().toISOString(),
-  };
   const router = useRouter();
-  const zustand = useStore();
-  const { setHasDataChanged } = zustand;
+  const params = useParams();
+  const postId = params?.id as string;
 
+  const queryClient = useQueryClient();
+  const zustand = useStore();
+  const { isLoading, setIsLoading, setHasDataChanged } = zustand;
+  const [data, setData] = useState<ItemPostProps[]>([]);
+  const [filterPage, setFilterPage] = useState<Filter>(filterInit);
   const [isBusy, setIsBusy] = useState(false);
+  const [request, setRequest] = useState<PostDetailProps>(dataInit);
   const [images, setImages] = useState<imageProps[]>([]);
   const [deleteImages, setDeleteImages] = useState<imageProps[]>([]);
   const [isEdit, setIsEdit] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const [request, setRequest] = useState<PostDetailProps>(dataInit);
-
+  const [preview, setPreview] = useState<boolean>(false);
   const SaveData = async () => {
     if (isBusy) {
+      return;
+    }
+    if (request.content.length == 0) {
+      toast.warning("Typing anything !!", {
+        position: "bottom-right",
+      });
       return;
     }
     setIsBusy(true);
@@ -96,7 +98,8 @@ const PostDetailPage = () => {
           toast.success("Create Success !", {
             position: "bottom-right",
           });
-          router.push("/admin/posts");
+          setData([response.data, ...data]);
+          router.push("/social");
         } else {
           toast.error("Create Fail !", {
             position: "bottom-right",
@@ -144,14 +147,14 @@ const PostDetailPage = () => {
       };
     }
 
-    UpdatePost_UploadMutli(id, request_v2)
+    UpdatePost_UploadMutli(postId, request_v2)
       .then((response) => {
         if (response.success) {
           setHasDataChanged(true);
-          router.push("/admin/posts");
           toast.success("Update Success !", {
             position: "bottom-right",
           });
+          router.push("/social");
         } else {
           toast.error("Update Fail !", {
             position: "bottom-right",
@@ -185,16 +188,6 @@ const PostDetailPage = () => {
 
     return formData;
   };
-
-  const LoadData = async () => {
-    SeachPost(id, {}).then((response) => {
-      if (response.success) {
-        setRequest(response.data);
-        setImages(response.data.images);
-      }
-    });
-  };
-
   const handleDeleteImage = (img: any) => {
     var indexToRemove = images.indexOf(img);
 
@@ -206,96 +199,73 @@ const PostDetailPage = () => {
     }
   };
 
+  const LoadData = async () => {
+    SeachPost(postId, {}).then((response) => {
+      if (response.success) {
+        setRequest(response.data);
+        setImages(response.data.images);
+      }
+    });
+  };
   useEffect(() => {
-    if (id !== undefined && id !== "add") {
-      setIsEdit(true);
-      LoadData();
-    } else {
+    scrollTo(0, 0);
+    LoadData();
+    if (auth) {
       setRequest({
         ...request,
-        userId: auth?.user?.id,
-        userName: auth?.user?.fullName,
-        userImages:
-          auth?.user?.profilePic.length > 0
-            ? [
-                {
-                  imageAbsolutePath: auth?.user?.profilePic,
-                },
-              ]
-            : [],
-        createdAt: new Date().toISOString(),
+        userId: auth.user.id,
       });
     }
-  }, [id]);
+  }, [postId, auth]);
+
   return (
-    <div>
+    <>
       <Breadcrumb
-        pageName={id !== "add" ? "Edit" : "Create"}
-        prePageTitle="Posts"
-        preLink="/admin/posts"
+        pageName={postId !== "add" ? "Edit Post" : "Create Post"}
+        prePageTitle="Social"
+        preLink="/social"
         hiddenGoBackBtn={false}
       />
-      {isBusy ? (
-        <LottieComponent />
-      ) : (
-        <div className="custom-scrollbar min-h-[calc(100vh-180px)] overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
-          <div className="flex items-start justify-between py-4">
-            <div className="flex items-center">
-              <img
-                src={
-                  request.userImages?.length > 0
-                    ? request.userImages[0]?.imageAbsolutePath
-                    : "/images/user/default-user.png"
-                }
-                alt={`Avatar ${request?.userName}`}
-                className="h-10 w-10 rounded-full border border-gray-200 object-cover"
-              />
-              <div className="ml-3">
-                <div className="text-sm font-semibold text-gray-900 dark:text-white/90">
-                  {request?.userName}
-                </div>
-                <div className="text-xs text-gray-500">
-                  {formatMessageTime(
-                    request?.createdAt
-                      ? request?.createdAt
-                      : new Date().toISOString(),
-                  )}
-                </div>
+      <div className="custom-scrollbar min-h-[calc(100vh-180px)] overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+        <div className="flex items-start justify-between py-4">
+          <div className="flex items-center">
+            <img
+              src={
+                request.userImages?.length > 0
+                  ? request.userImages[0]?.imageAbsolutePath
+                  : "/images/user/default-user.png"
+              }
+              alt={`Avatar ${request?.userName}`}
+              className="h-10 w-10 rounded-full border border-gray-200 object-cover"
+            />
+            <div className="ml-3">
+              <div className="text-sm font-semibold text-gray-900 dark:text-white/90">
+                {request?.userName}
+              </div>
+              <div className="text-xs text-gray-500">
+                {formatMessageTime(
+                  request?.createdAt
+                    ? request?.createdAt
+                    : new Date().toISOString(),
+                )}
               </div>
             </div>
           </div>
+          <Button
+            type="button"
+            onClick={() => setPreview(!preview)}
+            className="min-w-[6rem]"
+          >
+            {preview ? "Back" : "Preview"}
+          </Button>
+        </div>
+        {!preview ? (
           <HyperFormWrapper
             schema={postSchema}
             defaultValues={request}
-            onSubmit={isEdit ? UpdateData : SaveData}
+            onSubmit={postId !== "add" ? UpdateData : SaveData}
             className="grid grid-cols-1 gap-6 md:grid-cols-4"
           >
-            {isEdit && (
-              <div>
-                <Select
-                  {...{
-                    error: errors.includes("status"),
-                    hint: errors.includes("status") ? "Required field" : "",
-                  }}
-                  title={"Status"}
-                  name={"status"}
-                  defaultValue={request.status}
-                  options={Object.values(PostStatus).map((val) => ({
-                    label: val,
-                    value: val,
-                  }))}
-                  placeholder="Select an option"
-                  onChange={(e) => {
-                    setRequest({
-                      ...request,
-                      status: e.value,
-                    });
-                  }}
-                  className="dark:bg-dark-900"
-                />
-              </div>
-            )}
-
             <div className="col-span-1 md:col-span-4">
               <HD_TextArea
                 title="Content"
@@ -326,7 +296,6 @@ const PostDetailPage = () => {
                 }
               />
             </div> */}
-
             <div className="col-span-1 md:col-span-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="">
@@ -383,10 +352,16 @@ const PostDetailPage = () => {
               </div>
             </div>
           </HyperFormWrapper>
-        </div>
-      )}
-    </div>
+        ) : (
+          <div>
+            <div className="mb-2 mt-4 text-sm text-gray-800 dark:text-white/90">
+              {request.content}
+            </div>
+            <BoxImages images={images} />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
-
-export default PostDetailPage;
+export default MainPage;

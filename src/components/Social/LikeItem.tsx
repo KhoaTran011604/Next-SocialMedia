@@ -3,8 +3,6 @@ import { formatMessageTime } from "@/lib/format-message-time";
 import { LikeResponse } from "@/types/MainType";
 
 const LikeItem = ({ like }: { like: LikeResponse }) => {
-  console.log("demo restore changes after commit but before push code");
-
   return (
     <div>
       <div className="mt-2 flex justify-between gap-4">

@@ -214,7 +214,7 @@ const NewPostComponent = ({
       </div>
 
       <div className="col-span-1 md:col-span-4">
-        <div className="grid md:grid-cols-2 gap-4 grid-cols-1">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="">
             <DropzoneComponentV2
               title={"Images"}

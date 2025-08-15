@@ -24,7 +24,7 @@ const MessageByUserItem = ({ data }: { data: any }) => {
               ? auth?.user?.profilePic
               : "/images/user/default-user.png"
           }
-          alt={`image of ${auth?.user.fullName}`}
+          alt={`image of ${auth?.user?.fullName}`}
         />
         <div className="leading-1.5 flex w-full max-w-[320px] flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700">
           <div className="flex items-center space-x-2 rtl:space-x-reverse">

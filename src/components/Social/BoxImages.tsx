@@ -22,7 +22,11 @@ const BoxImages = ({ images }: { images: imageProps[] }) => {
               <PhotoView key={Math.random()} src={img.imageAbsolutePath}>
                 {idx < 3 ? (
                   <img
-                    src={img.imageAbsolutePath}
+                    src={
+                      img.isNewUpload
+                        ? img.imageBase64String
+                        : img.imageAbsolutePath
+                    }
                     style={{ objectFit: "cover" }}
                     alt="Post"
                     className="h-auto max-h-[500px] w-full object-cover"
@@ -38,7 +42,11 @@ const BoxImages = ({ images }: { images: imageProps[] }) => {
 
                     {/* Image layer */}
                     <img
-                      src={img.imageAbsolutePath}
+                      src={
+                        img.isNewUpload
+                          ? img.imageBase64String
+                          : img.imageAbsolutePath
+                      }
                       alt="Post"
                       className={`z-0 max-h-[500px] w-full object-cover ${idx >= 4 && "hidden"}`}
                     />
