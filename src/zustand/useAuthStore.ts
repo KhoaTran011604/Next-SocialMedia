@@ -160,12 +160,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
     if (!authUser || get().socket?.connected) return;
 
-    const socket: Socket = io(PUBLIC_SOCKET_URL, {
+    const socket: Socket = io(LOCAL_SOCKET_URL, {
       query: {
         userId: authUser.id,
       },
     });
-    const socketAll: Socket = io(PUBLIC_SOCKET_URL);
+    const socketAll: Socket = io(LOCAL_SOCKET_URL);
 
     socket.connect();
     set({ socket });

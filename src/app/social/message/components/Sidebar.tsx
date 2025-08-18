@@ -58,7 +58,7 @@ const UserOnlineSidebar = () => {
             }}
             className={`hover:bg-base-300 flex w-full items-center gap-3 p-3 transition-colors ${selectedUser?._id === user._id ? "bg-base-300 ring-base-300 ring-1" : ""} `}
           >
-            <div className="relative mx-auto lg:mx-0">
+            <div className="relative mx-auto size-12 lg:mx-0">
               <img
                 src={
                   user.images.length > 0
@@ -66,7 +66,7 @@ const UserOnlineSidebar = () => {
                     : "/images/user/default-user.png"
                 }
                 alt={user.name}
-                className="size-12 rounded-full object-cover"
+                className="size-12 overflow-hidden rounded-full object-cover"
               />
               {onlineUsers.includes(user._id) && (
                 <span className="absolute bottom-0 right-0 size-3 rounded-full bg-green-500 ring-2 ring-zinc-900" />

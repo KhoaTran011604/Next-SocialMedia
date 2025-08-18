@@ -14,7 +14,7 @@ const ChatHeader = () => {
         <div className="flex items-center gap-3">
           {/* Avatar */}
           <div className="avatar">
-            <div className="relative size-10 rounded-full">
+            <div className="relative size-10 overflow-hidden rounded-full">
               <img
                 src={
                   selectedUser && selectedUser.images.length > 0
@@ -22,7 +22,6 @@ const ChatHeader = () => {
                     : "/images/user/default-user.png"
                 }
                 alt={selectedUser?.fullName}
-                className="rounded-full"
               />
             </div>
           </div>
