@@ -16,16 +16,19 @@ const MessageByUserItem = ({ data }: { data: any }) => {
 
   return (
     <div className={`flex w-full justify-end`}>
-      <div className="max-[200px] flex items-start gap-2.5">
-        <img
-          className="h-8 w-8 rounded-full"
-          src={
-            auth?.user?.profilePic?.length > 0
-              ? auth?.user?.profilePic
-              : "/images/user/default-user.png"
-          }
-          alt={`image of ${auth?.user?.fullName}`}
-        />
+      <div className="flex items-start gap-2.5">
+        <div className="h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
+          <img
+            className=""
+            src={
+              auth?.user?.profilePic?.length > 0
+                ? auth?.user?.profilePic
+                : "/images/user/default-user.png"
+            }
+            alt={`image of ${auth?.user?.fullName}`}
+            style={{ objectFit: "cover" }}
+          />
+        </div>
         <div className="leading-1.5 flex w-full max-w-[320px] flex-col rounded-e-xl rounded-es-xl border-gray-200 bg-gray-100 p-4 dark:bg-gray-700">
           <div className="flex items-center space-x-2 rtl:space-x-reverse">
             <span className="text-sm font-semibold text-gray-900 dark:text-white">
