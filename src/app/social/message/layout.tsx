@@ -21,7 +21,9 @@ export default function RootLayout({ children }: PropsWithChildren) {
       <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-6 md:px-16">
         {children}
       </main>
-      <UserOnlineSidebar />
+      <div className="hidden md:block">
+        <UserOnlineSidebar />
+      </div>
     </div>
   );
 }

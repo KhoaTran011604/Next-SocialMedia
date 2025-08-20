@@ -196,6 +196,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setIsAuthenticated(false);
     dataSocketIO.authUser = null;
     dataSocketIO.disconnectSocket();
+    authZustand.disconnectSocket();
     return true;
   };
   const getTokensFromCookies = () => {

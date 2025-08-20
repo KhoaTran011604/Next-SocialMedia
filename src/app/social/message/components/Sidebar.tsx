@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
-import { useAuth } from "@/context/auth";
 import { useChatStore } from "@/zustand/useChatStore";
 import { useAuthStore } from "@/zustand/useAuthStore";
 
@@ -25,14 +24,15 @@ const UserOnlineSidebar = () => {
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside className="flex h-full w-20 flex-col transition-all duration-200 lg:w-72">
+    <aside className="flex h-full w-full flex-col transition-all duration-200">
       <div className="w-full border-b border-gray-200 p-5 dark:border-gray-800">
         <div className="flex items-center gap-2">
           <Users className="size-6" />
-          <span className="hidden font-medium lg:block">Contacts</span>
+          <span className="font-medium">Contacts</span>
         </div>
-        {/* TODO: Online filter toggle */}
-        <div className="mt-3 hidden items-center gap-2 lg:flex">
+
+        {/* Online filter toggle */}
+        <div className="mt-3 flex items-center gap-2">
           <label className="flex cursor-pointer items-center gap-2">
             <input
               type="checkbox"
@@ -56,16 +56,20 @@ const UserOnlineSidebar = () => {
               setSelectedUser(user);
               dataAuthStore.setSelectedUser({ ...user, id: user._id });
             }}
-            className={`hover:bg-base-300 flex w-full items-center gap-3 p-3 transition-colors ${selectedUser?._id === user._id ? "bg-base-300 ring-base-300 ring-1" : ""} `}
+            className={`hover:bg-base-300 flex w-full items-center gap-3 p-3 transition-colors ${
+              selectedUser?._id === user._id
+                ? "bg-base-300 ring-base-300 ring-1"
+                : ""
+            }`}
           >
-            <div className="relative mx-auto size-12 lg:mx-0">
+            <div className="relative size-12 flex-shrink-0">
               <img
                 src={
                   user.images.length > 0
                     ? user.images[0].imageAbsolutePath
                     : "/images/user/default-user.png"
                 }
-                alt={user.name}
+                alt={user.fullName}
                 className="size-12 overflow-hidden rounded-full object-cover"
               />
               {onlineUsers.includes(user._id) && (
@@ -73,8 +77,7 @@ const UserOnlineSidebar = () => {
               )}
             </div>
 
-            {/* User info - only visible on larger screens */}
-            <div className="hidden min-w-0 text-left lg:block">
+            <div className="min-w-0 flex-1 text-left">
               <div className="truncate font-medium">{user.fullName}</div>
               <div className="text-sm text-zinc-400">
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
@@ -90,4 +93,5 @@ const UserOnlineSidebar = () => {
     </aside>
   );
 };
+
 export default UserOnlineSidebar;
