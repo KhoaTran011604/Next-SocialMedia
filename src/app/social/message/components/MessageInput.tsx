@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import React, { useReducer, useRef, useState } from "react";
 import { Image, Send, X } from "lucide-react";
 
 import { useAuth } from "@/context/auth";
@@ -8,17 +8,19 @@ import { imageProps } from "@/types/MainType";
 import { IoMdClose } from "react-icons/io";
 import { useChatStore } from "@/zustand/useChatStore";
 import { useAuthStore } from "@/zustand/useAuthStore";
+import TypingComponent from "./lotties/TypingComponent";
 
 const MessageInput = () => {
   const authZustand = useAuthStore();
   const chatStore = useChatStore();
+  const { socket } = authZustand;
   const [isBusy, setIsBusy] = useState<boolean>(false);
   const { selectedUser, messages, setMessages } = chatStore;
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [images, setImages] = useState<imageProps[]>([]);
-  //const [showEmoji, setShowEmoji] = useState(false);
+  const typingTimeout = useRef<NodeJS.Timeout | null>(null);
 
   const handleImageUpload = (file: any) => {
     if (file) {
@@ -89,6 +91,8 @@ const MessageInput = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
     setIsBusy(false);
+    if (!socket) return;
+    socket.emit("stop_typing", { receiverId: "demo_id", senderName: "Khoa" });
   };
 
   const jsonToFormData = (json: Record<string, any>): FormData => {
@@ -113,15 +117,38 @@ const MessageInput = () => {
     return formData;
   };
 
-  // const addEmoji = (e: { unified: string }) => {
-  //   const sym = e.unified.split("_");
-  //   const codeArray = sym.map((el) => parseInt(el, 16));
-  //   const emoji = String.fromCodePoint(...codeArray);
-  //   setText((prev) => prev + emoji);
-  // };
+  const typingRef = useRef(false);
+  const [, forceUpdate] = useReducer((x) => x + 1, 0); // Chỉ render thủ công khi cần
+
+  React.useEffect(() => {
+    if (!socket) return;
+
+    socket.on("typing", (dataTyping) => {
+      if (!typingRef.current) {
+        typingRef.current = true;
+        forceUpdate(); // Chỉ render khi chuyển từ false -> true
+      }
+      if (typingTimeout.current) clearTimeout(typingTimeout.current);
+      typingTimeout.current = setTimeout(() => {
+        typingRef.current = false;
+        forceUpdate(); // Chỉ render khi chuyển từ true -> false
+      }, 2000);
+    });
+
+    socket.on("stop_typing", (dataTyping) => {
+      typingRef.current = false;
+      forceUpdate(); // Render lại khi stop typing
+    });
+
+    return () => {
+      socket.off("typing");
+      socket.off("stop_typing");
+    };
+  }, [socket]);
 
   return (
     <div className="w-full p-4">
+      {typingRef.current && <TypingComponent />}
       {images.length > 0 && (
         <div className="mb-3 flex items-center gap-2">
           <div className="relative">
@@ -155,7 +182,27 @@ const MessageInput = () => {
             className="shadow-theme-xs h-11 flex-1 appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30"
             placeholder="Type a message..."
             value={text}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setText(value);
+
+              if (!socket || !socket.connected) return;
+
+              // Gửi event typing ngay khi user gõ
+              socket.emit("typing", {
+                receiverId: selectedUser._id,
+                senderName: "Khoa",
+              });
+
+              // Reset timeout để ngừng typing sau 1.5s không gõ
+              if (typingTimeout.current) clearTimeout(typingTimeout.current);
+              typingTimeout.current = setTimeout(() => {
+                socket.emit("stop_typing", {
+                  receiverId: selectedUser._id, // CHỈNH LẠI Ở ĐÂY
+                  senderName: "Khoa",
+                });
+              }, 1000);
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
@@ -163,6 +210,7 @@ const MessageInput = () => {
               }
             }}
           />
+
           <input
             type="file"
             accept="image/*"
@@ -201,30 +249,6 @@ const MessageInput = () => {
             <Send size={22} />
           </button>
         )}
-
-        {/* <span
-          onClick={() => setShowEmoji(!showEmoji)}
-          className="cursor-pointer hover:text-primary"
-        >
-          <BsEmojiSunglasses />
-        </span>
-        {showEmoji && (
-          <div className="absolute bottom-4 right-4">
-            <button
-              className="absolute bottom-0 left-0 -translate-x-10 -translate-y-4 rounded-full bg-gray-200 p-2 shadow-lg hover:scale-110 hover:text-primary"
-              onClick={() => setShowEmoji(false)}
-            >
-              <IoMdClose />
-            </button>
-            <Picker
-              data={data}
-              emojiSize={20}
-              emojiButtonSize={28}
-              onEmojiSelect={addEmoji}
-              maxFrequentRows={0}
-            />
-          </div>
-        )} */}
       </div>
     </div>
   );

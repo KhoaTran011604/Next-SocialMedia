@@ -120,12 +120,17 @@ export const useChatStore = create<ChatState>((set, get) => ({
 
     const socket = useAuthStore.getState().socket;
     if (!socket) return;
+    // Nhận sự kiện typing
+    socket.on("typing", (dataReturn) => {
+      console.log("typing", dataReturn);
+
+    });
+
+    socket.on("stop_typing", (dataReturn) => {
+      console.log("stop_typing", dataReturn);
+    });
 
     socket.on("newMessage", (newMessage: Message) => {
-
-
-
-
       const isFromSelectedUser = newMessage.senderId === selectedUser._id;
       if (!isFromSelectedUser) return;
 
@@ -139,6 +144,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
     if (!socket) return;
 
     socket.off("newMessage");
+    socket.off("typing");
+    socket.off("stop_typing");
   },
   followNotifyToMe: () => {
     const { selectedUser } = get();
