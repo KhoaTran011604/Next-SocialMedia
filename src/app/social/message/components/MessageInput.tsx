@@ -1,14 +1,11 @@
 "use client";
 import React, { useReducer, useRef, useState } from "react";
-import { Image, Send, X } from "lucide-react";
-
-import { useAuth } from "@/context/auth";
+import { Image, Send } from "lucide-react";
 import { SendMessage, SendMessageWithImage } from "@/api/socialService";
 import { imageProps } from "@/types/MainType";
 import { IoMdClose } from "react-icons/io";
 import { useChatStore } from "@/zustand/useChatStore";
 import { useAuthStore } from "@/zustand/useAuthStore";
-import TypingComponent from "./lotties/TypingComponent";
 
 const MessageInput = () => {
   const authZustand = useAuthStore();
@@ -148,7 +145,7 @@ const MessageInput = () => {
 
   return (
     <div className="w-full p-4">
-      {typingRef.current && <TypingComponent />}
+      {/* {typingRef.current && <TypingComponent />} */}
       {images.length > 0 && (
         <div className="mb-3 flex items-center gap-2">
           <div className="relative">
