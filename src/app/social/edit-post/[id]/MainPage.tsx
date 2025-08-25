@@ -24,6 +24,8 @@ import { Button } from "@/components/ui/button";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 import BoxImages from "@/components/Social/BoxImages";
 import { useAuth } from "@/context/auth";
+import DropzoneVideoComponent from "@/components/common/DropZoneVideo";
+import BoxImages_V2 from "@/components/Social/BoxImages_V2";
 
 const filterInit = {
   keySearch: "",
@@ -213,7 +215,7 @@ const MainPage = () => {
     if (auth) {
       setRequest({
         ...request,
-        userId: auth.user.id,
+        userId: auth?.user?.id,
       });
     }
   }, [postId, auth]);
@@ -221,7 +223,7 @@ const MainPage = () => {
   return (
     <>
       <Breadcrumb
-        pageName={postId !== "add" ? "Edit Post" : "Create Post"}
+        pageName={postId.includes("add") ? "Create Post" : "Edit Post"}
         prePageTitle="Social"
         preLink="/social"
         hiddenGoBackBtn={false}
@@ -299,16 +301,29 @@ const MainPage = () => {
             <div className="col-span-1 md:col-span-4">
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div className="">
-                  <DropzoneComponentV2
-                    title={"Images"}
-                    name={"images-upload"}
-                    multiple={true}
-                    typeDataReturn={TYPE_OF_DATA_IMG_RETURN}
-                    imagesInit={images}
-                    onUpload={(dataReturn: any) => {
-                      setImages(dataReturn);
-                    }}
-                  />
+                  {postId === "add-video" ? (
+                    <DropzoneVideoComponent
+                      title={"Videos"}
+                      name={"videos-upload"}
+                      multiple={true}
+                      typeDataReturn={TYPE_OF_DATA_IMG_RETURN}
+                      imagesInit={images}
+                      onUpload={(dataReturn: any) => {
+                        setImages(dataReturn);
+                      }}
+                    />
+                  ) : (
+                    <DropzoneComponentV2
+                      title={"Images"}
+                      name={"images-upload"}
+                      multiple={true}
+                      typeDataReturn={TYPE_OF_DATA_IMG_RETURN}
+                      imagesInit={images}
+                      onUpload={(dataReturn: any) => {
+                        setImages(dataReturn);
+                      }}
+                    />
+                  )}
                 </div>
                 <div className="mt-4">
                   {images?.length > 0 &&
@@ -318,15 +333,23 @@ const MainPage = () => {
                           itemImg.imageAbsolutePath != "") && (
                           <div className="relative my-4 flex items-center space-x-4 rounded-lg border border-gray-300 p-2 dark:border-gray-700">
                             <div className="h-[100px] w-[100px]">
-                              <img
-                                src={
-                                  itemImg.isNewUpload
-                                    ? itemImg.imageBase64String
-                                    : itemImg.imageAbsolutePath
-                                }
-                                className="h-full w-full rounded-sm"
-                                style={{ objectFit: "cover" }}
-                              />
+                              {itemImg.isVideo && !itemImg.isNewUpload ? (
+                                <img
+                                  src={"/images/common/video-default.png"}
+                                  className="h-full w-full rounded-sm"
+                                  style={{ objectFit: "contain" }}
+                                />
+                              ) : (
+                                <img
+                                  src={
+                                    itemImg.isNewUpload
+                                      ? itemImg.imageBase64String
+                                      : itemImg.imageAbsolutePath
+                                  }
+                                  className="h-full w-full rounded-sm"
+                                  style={{ objectFit: "contain" }}
+                                />
+                              )}
                               <div
                                 className="absolute right-0 top-0 -translate-y-2 translate-x-2 rounded-lg bg-gray-800 p-2 text-white hover:bg-red-500 dark:bg-white dark:text-black"
                                 onClick={() => {
@@ -357,7 +380,7 @@ const MainPage = () => {
             <div className="mb-2 mt-4 text-sm text-gray-800 dark:text-white/90">
               {request.content}
             </div>
-            <BoxImages images={images} />
+            <BoxImages_V2 images={images} />
           </div>
         )}
       </div>

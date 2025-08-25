@@ -38,6 +38,7 @@ import {
 import { ChevronUpIcon, UserIcon } from "@/assets/icons";
 import { LogOutIcon } from "../Layouts/header/user-info/icons";
 import { DeletePost } from "@/api/postService";
+import BoxImages_V2 from "./BoxImages_V2";
 
 const PostCard = ({
   userId,
@@ -206,7 +207,7 @@ const PostCard = ({
 
         {/* Image (if available) */}
 
-        <BoxImages images={images} />
+        <BoxImages_V2 images={images} />
 
         {/* Stats */}
         <div className="mt-3 flex justify-between border-t-2 border-gray-100 pt-2 text-xs text-gray-500 dark:border-gray-800">

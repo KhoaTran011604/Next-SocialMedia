@@ -260,8 +260,8 @@ const NewPost = ({
             </button>
 
             {/* Tag */}
-            <button
-              type="button"
+            <Link
+              href={"social/edit-post/add-video"}
               className="flex items-center rounded-lg px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-blue-600"
             >
               <svg
@@ -274,8 +274,8 @@ const NewPost = ({
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-              <span className="hidden sm:inline">Tag</span>
-            </button>
+              <span className="hidden sm:inline">Post Video</span>
+            </Link>
 
             {/* Feeling */}
             <Link

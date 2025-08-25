@@ -85,6 +85,7 @@ export interface imageProps {
   imageAbsolutePath: string;
   imageFile: any;
   isNewUpload: boolean;
+  isVideo?: boolean;
 }
 
 export type LikePayload = {
