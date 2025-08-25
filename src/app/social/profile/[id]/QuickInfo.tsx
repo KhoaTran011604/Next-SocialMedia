@@ -1,7 +1,39 @@
-import { ItemPostProps } from "@/types/MainType";
+import { SeachUser } from "@/api/userService";
+import { useAuth } from "@/context/auth";
+import { imageProps, ItemPostProps } from "@/types/MainType";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
-const QuickInfo = ({ data }: { data: ItemPostProps }) => {
+const dataInit = {
+  fullName: "",
+  email: "",
+  password: "",
+  phone: "",
+  address: "",
+  status: "Active",
+  role: "User",
+  old_password: "",
+  password_again: "",
+};
+const QuickInfo = () => {
+  const params = useParams();
+  const userId = params?.id as string;
+  const [images, setImages] = useState<imageProps[]>([]);
+
+  const [request, setRequest] = useState(dataInit);
+  const auth = useAuth();
+  const LoadData = async () => {
+    SeachUser(userId, {}).then((response) => {
+      if (response.success) {
+        setRequest({ ...request, ...response.data });
+        setImages(response.data.images);
+      }
+    });
+  };
+  useEffect(() => {
+    LoadData();
+  }, [userId]);
   return (
     <div className="mb-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div className="relative h-52 bg-gray-100">
@@ -14,8 +46,8 @@ const QuickInfo = ({ data }: { data: ItemPostProps }) => {
         <div className="absolute -bottom-16 left-6">
           <img
             src={
-              data?.userId?.images.length > 0
-                ? data.userId.images[0].imageAbsolutePath
+              images.length > 0
+                ? images[0].imageAbsolutePath
                 : "/images/user/default-user.png"
             }
             alt="Avatar"
@@ -28,7 +60,7 @@ const QuickInfo = ({ data }: { data: ItemPostProps }) => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">
-              {data?.userId?.fullName}
+              {request.fullName}
             </h1>
             <p className="text-sm text-gray-600">1.234 friends</p>
             <div className="mt-1 flex -space-x-2">
