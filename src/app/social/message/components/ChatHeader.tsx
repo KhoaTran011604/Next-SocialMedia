@@ -58,7 +58,7 @@ const ChatHeader = () => {
             </div>
             {typingRef.current && (
               <div className="absolute -bottom-[15px] -right-[10px]">
-                <TypingComponent width={20} />
+                <TypingComponent width={30} />
               </div>
             )}
           </div>
